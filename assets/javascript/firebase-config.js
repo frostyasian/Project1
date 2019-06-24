@@ -9,8 +9,3 @@ var firebaseConfig = {
 };
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
-
-//Iconfinder Api secure-information
-var clientID = "RZRl4YS26HBHgzCo0mq8qZkAoUxNzSXs8knSVxqGLnGE65gAJUV9VbbNZThEhyDC";
-var clientSecret = "x7VI5XOmv9JmFgGXB6rAwLhqSVutaSPfk5otLovpQjSfyWsYhI2VAnEFzlWtsO5n";
-var apiEndPoint = "https://api.iconfinder.com/v3/icons/search?query=";
