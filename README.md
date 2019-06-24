@@ -18,14 +18,6 @@ Requirements:
 
 - https://api.edamam.com/search?q=chicken&app_id=${YOUR_APP_ID}&app_key=${YOUR_APP_KEY}&from=0&to=3&calories=591-722&health=alcohol-free
 
-## APP-ID
-
-- 3f5ead16
-
-## Application Key
-
-- c225ae2c7c6a61ce84c5a6514777dbd2
-
 ## DEMO Query
 
 - https://api.edamam.com/search?q=chicken&app_id=3f5ead16&app_key=c225ae2c7c6a61ce84c5a6514777dbd2&from=0&to=3&calories=591-722&health=alcohol-free
