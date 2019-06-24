@@ -23,9 +23,9 @@ firebase
 //
 //   4. hold a reference to the user's recipe directory ('/users/<user-token>/recipe_box)
 var currentUser;
-var userDatabase;
-var userProfile;
-var userRecipeBox;
+var userDatabaseRef;
+var userProfileRef;
+var userRecipeBoxRef;
 
 //Define login functions to be called when a user signs up / logs in
 
@@ -55,13 +55,16 @@ function createNewUser(email, password, userName) {
         });
 
       //set up a database directory for the user
-      userDatabase = database.ref("/users/" + currentUser.uid);
+      userDatabaseRef = database.ref("/users/" + currentUser.uid);
       //set up a database directory for the user's profile
-      userProfile = database.ref("/users/" + currentUser.uid + "/profile");
+      userProfileRef = database.ref("/users/" + currentUser.uid + "/profile");
       //set up a database directory for the user's recipe box
-      userRecipeBox = database.ref("/users/" + currentUser.uid + "/recipe_box");
+      userRecipeBoxRef = database.ref("/users/" + currentUser.uid + "/recipe_box");
       //Great! our new user now has a custom name, a profile, and a place to store recipes
       //At this point we haven't written anything to the databse. We've just set up database references
+
+      //set up the user's profile directory
+      setProfileData(userProfileRef);
     });
 }
 
@@ -75,11 +78,11 @@ function login(email, password) {
       //grab the user pointer and store it in the global variable defined above
       currentUser = firebase.auth().currentUser;
       //link to the database directory for the user
-      userDatabase = database.ref("/users/" + currentUser.uid);
+      userDatabaseRef = database.ref("/users/" + currentUser.uid);
       //link to the database directory for the user's profile
-      userProfile = database.ref("/users/" + currentUser.uid + "/profile");
+      userProfileRef = database.ref("/users/" + currentUser.uid + "/profile");
       //link to the database directory for the user's recipe box
-      userRecipeBox = database.ref("/users/" + currentUser.uid + "/recipe_box");
+      userRecipeBoxRef = database.ref("/users/" + currentUser.uid + "/recipe_box");
       //TODO - load the user's recipe box and profile information, if any
       console.log(currentUser.uid + ": signed into account");
     })
@@ -111,11 +114,11 @@ function guestSignIn() {
           console.log("ERROR -" + err.code + ": " + err.message);
         });
       //set up a database directory for the guest
-      userDatabase = database.ref("/users/" + currentUser.uid);
+      userDatabaseRef = database.ref("/users/" + currentUser.uid);
       //set up a database directory for the guest's profile
-      userProfile = database.ref("/users/" + currentUser.uid + "/profile");
+      userProfileRef = database.ref("/users/" + currentUser.uid + "/profile");
       //set up a database directory for the guest's recipe box
-      userRecipeBox = database.ref("/users/" + currentUser.uid + "/recipe_box");
+      userRecipeBoxRef = database.ref("/users/" + currentUser.uid + "/recipe_box");
       //Great! our new guest now has a custom name, a profile, and a place to store recipes
     })
     .catch(function(err) {
@@ -168,6 +171,11 @@ firebase.auth().onAuthStateChanged(function(user) {
     //TODO - populate the UI with profile data
     //TODO - populate the recipe box from the user's database directory
     currentUser = firebase.auth().currentUser;
+    //a redundancy in the code that ensures that the database references are made for users who refresh the page or chose to stay logged in
+    userDatabaseRef = database.ref("/users/" + currentUser.uid);
+    userProfileRef = database.ref("/users/" + currentUser.uid + "/profile");
+    userRecipeBoxRef = database.ref("/users/" + currentUser.uid + "/recipe_box");
+    fetchRecipes();
     console.log(currentUser.uid + ": has fired the onAuthStateChanged event");
   } else {
     //this block is reached when the poage loads without a user logged in, or a user signs out, or navigates away from the page, or the tab/window is closed
@@ -177,6 +185,8 @@ firebase.auth().onAuthStateChanged(function(user) {
     //data or methods attached to the user that left.
     console.log("a user logged out");
     currentUser = undefined;
+    storedRecipeCache = [];
+    storedRecipeKeys = [];
   }
 });
 
