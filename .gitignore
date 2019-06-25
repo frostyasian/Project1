@@ -3,4 +3,9 @@
 ################################################################################
 
 /.vs/slnx.sqlite
+
+
+/assets/javascript/firebase-config.js
+
 *.suo
+

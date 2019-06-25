@@ -44,3 +44,41 @@ body {
 #search-button {
   margin-left: 5px;
 }
+
+/* chunk specific to auth.html */
+#sign-up,
+#sign-in,
+#update-user-info,
+#user-info {
+  width: 300px;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  border: 1px solid midnightblue;
+  background-color: darkkhaki;
+  color: #1f1f1f;
+}
+
+input {
+  display: inline-block;
+}
+
+button {
+  background-color: #1f1f1f;
+  color: darkkhaki;
+  border: none;
+  border-radius: 5px;
+  width: 100px;
+}
+
+button:hover {
+  opacity: 0.85;
+}
+
+.panel {
+  width: 800px;
+  margin: auto;
+  display: flex;
+  flex-wrap: wrap;
+}

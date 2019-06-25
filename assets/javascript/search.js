@@ -14,6 +14,7 @@ $("#search-button").on("click", function() {
     $("#search-term").text(searchTerm);
     var hits = response.hits;
     $("#results").empty();
+    console.log(hits[0].recipe);
     $.each(hits, function(index, value) {
       var recipe = hits[index].recipe;
       //display the search result
