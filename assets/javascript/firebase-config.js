@@ -1,11 +1,11 @@
 var firebaseConfig = {
-  apiKey: "AIzaSyCr7ZdjRuOSChN3BIdNNa2l3SEtgQiHl2Y",
-  authDomain: "recipe-box-d4385.firebaseapp.com",
-  databaseURL: "https://recipe-box-d4385.firebaseio.com",
-  projectId: "recipe-box-d4385",
+  apiKey: "AIzaSyDfQdEV3qyvJiCn8DDAau9stCrPERFbVLQ",
+  authDomain: "project1-bab30.firebaseapp.com",
+  databaseURL: "https://project1-bab30.firebaseio.com",
+  projectId: "project1-bab30",
   storageBucket: "",
-  messagingSenderId: "813897633460",
-  appId: "1:813897633460:web:789fb9b6748cf3e2"
+  messagingSenderId: "686045408466",
+  appId: "1:686045408466:web:b65d6661e432870d"
 };
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
