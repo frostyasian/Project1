@@ -45,28 +45,6 @@ body {
   margin-left: 5px;
 }
 
-.column {
-  float: left;
-  padding: 10px;
-  margin: 10px;
-}
-
-.left {
-  width: 700px;
-  height: 100%;
-  background-color: grey;
-}
-.right {
-  text-align: center;
-  width: 500px;
-  height: 100%;
-  background-color: grey;
-}
-.row:after {
-  content: "";
-  display: table;
-  clear: both;
-}
 .footer {
   position: fixed;
   left: 0;
@@ -75,4 +53,63 @@ body {
   background-color: rgb(44, 42, 42);
   color: white;
   text-align: center;
+}
+
+#display {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+  width: 100%;
+  height: 100%;
+}
+#recipe-box {
+  margin: 5px;
+  background-color: white;
+  width: 300px;
+  height: 100%;
+}
+
+#results {
+  margin: 5px;
+  background-color: white;
+  flex: 1 0 auto;
+  height: 100%;
+}
+/* chunk specific to auth.html */
+#sign-up,
+#sign-in,
+#update-user-info,
+#user-info {
+  width: 300px;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  border: 1px solid midnightblue;
+  background-color: darkkhaki;
+  color: #1f1f1f;
+}
+
+input {
+  display: inline-block;
+}
+
+button {
+  background-color: #1f1f1f;
+  color: darkkhaki;
+  border: none;
+  border-radius: 5px;
+  width: 100px;
+}
+
+button:hover {
+  opacity: 0.85;
+}
+
+.panel {
+  width: 800px;
+  margin: auto;
+  display: flex;
+  flex-wrap: wrap;
 }
