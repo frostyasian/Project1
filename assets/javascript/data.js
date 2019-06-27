@@ -6,7 +6,6 @@ var storedRecipeKeys = [];
 //a function called when a new user is created
 function setProfileData() {
   var timeInMilis = new Date().getTime(); //this is a time string in miliseconds since Jan 1, 1970
-  console.log(timeInMilis);
   userProfileRef
     .set({
       userName: currentUser.displayName,
@@ -20,10 +19,10 @@ function setProfileData() {
 }
 
 //a function to call when updating a user's profile. dataObject
-//is an object that must contain keys alerady present in the user
+//is an object that must contain keys already present in the user
 //profile directory! Only pass keys that are being updated, otherwise data may be lost.
-function updateProfileData(userProfileRef, dataObject = {}) {
-  userProfileRef.update(dataObject).catch(function(err) {
+function updateData(databaseRef, dataObject = {}) {
+  databaseRef.update(dataObject).catch(function(err) {
     console.log("ERROR -" + err.code + ": " + err.message);
   });
 }
@@ -34,7 +33,12 @@ function fetchRecipes() {
   userRecipeBoxRef
     .once("value", function(snapshot) {
       //store the snapshot value in a variable. The value is formatted as a JSON object
+
       var obj = snapshot.val();
+      //if the user has nothing stored in their database, obj will be null
+      if (obj === null) {
+        return;
+      }
       //Use the built in data type methd Object.key() to get the keys of the object as an array
       var keys = Object.keys(obj);
       //looping over the keys is equivalent to looping through the object data
@@ -44,52 +48,53 @@ function fetchRecipes() {
           storedRecipeCache.push(obj[keys[i]]);
         }
       }
+      updateRecipeBox();
     })
     .catch(function(err) {
       console.log("ERROR -" + err.code + ": " + err.message);
     });
 }
 
-//a function to store a recipe in the recipe box
-function saveRecipe(r, label) {
+//a function to store a recipe in the recipe box and on the server
+function saveRecipe(recipeObject, label) {
   if (currentUser === undefined) {
-    console.log("you must be logged in to use this feature");
+    //expand the box div and display the sign-in modal
+    var isShowing = parseInt($("#box").attr("data-showing"));
+    var box = $("#box");
+    $("#auth-modal-in")
+      .detach()
+      .appendTo(box);
+    if (!isShowing) {
+      $("#box-click").trigger("click");
+    }
     return;
   }
 
-  //for indexing purposes, store the key of the recipe in the recipe object
-  var key = userRecipeBoxRef.push().key; //when new data is pushed to the database, a random hash key is generated
-
-  //Parse out the data we want to keep and use from the recipe object
-  //the MVP won't use any digestive data or cautions, daily nutrition or nutrients data
-  //these are added features which can be added later by modifying this object
-  var recipeObject = {
-    key: key,
-    title: r.label,
-    ingredients: r.ingredients, //an array of objects that contain the ingredient name and the weight in grams !!!the ingredients list may contain doubles!!!
-    source: r.source, //the name of the website where the recipe is located
-    image: r.image, //the image for the recipe
-    url: r.url, //the link to the recipe content on 3rd party site
-    dietLabels: r.dietLabels,
-    time: r.totalTime, //the total time to make the recipe
-    yield: r.yield, //the number of servings
-    calories: r.calories, //the total Caloires per serving
-    boxLabel: label //the user defined location in their recipe-box
-  };
-  storedRecipeCache.push(recipeObject);
-  storedRecipeKeys.push(key);
-
-  console.log(key);
-  sampleKey = key;
-  userRecipeBoxRef
-    .child(key) //this is how to access sub directories. THis only works if the key exists, which is why the code on line 61 is so important.
-    .set(recipeObject) //this method fials for any object key that takes a value of undefined
-    .then(function() {
-      console.log("recipe stored");
-    })
-    .catch(function(err) {
-      console.log("ERROR -" + err.code + ": " + err.message);
-    });
+  if (!storedRecipeCache.includes(recipeObject)) {
+    //for indexing purposes, store the key of the recipe in the recipe object
+    var key = userRecipeBoxRef.push().key; //when new data is pushed to the database, a random hash key is generated
+    recipeObject.key = key;
+    recipeObject.tab = label;
+    //store the recipe locally;
+    storedRecipeCache.push(recipeObject);
+    storedRecipeKeys.push(key);
+    //update the recipe box locally
+    updateRecipeBox();
+    //update the server
+    userRecipeBoxRef
+      .child(key) //this is how to access sub directories. This only works if the key exists, which is why the code on line 61 is so important.
+      .set(recipeObject) //this method fails for any object key that takes a value of undefined
+      .then(function() {
+        console.log("recipe stored");
+      })
+      .catch(function(err) {
+        console.log("ERROR -" + err.code + ": " + err.message);
+      });
+  } else {
+    var key = recipeObject.key;
+    recipeObject.tab = label;
+    updateData(userRecipeBoxRef.child(key), { tab: label });
+  }
 }
 
 //a function to delete a recipe - TODO - update this function!!!!!
@@ -110,6 +115,8 @@ function deleteRecipe(key) {
     storedRecipeCache.push(tempCache.shift());
     storedRecipeKeys.push(tempKeys.shift());
   }
+  //update the recipe box
+  updateRecipeBox();
   //great. we've removed the local reference to the recipe and it's key and preserved the mapping between recipes and keys in the storedRecipe arrays
   //now lets get rid of the recipe on firebase
   userRecipeBoxRef
@@ -122,37 +129,3 @@ function deleteRecipe(key) {
       console.log("ERROR -" + err.code + ": " + err.message);
     });
 }
-
-//Automated User Gen and test data
-//this method will fail if you did not link your database to the project in the firebase-config.js file
-//or if you did not set up authentication in your database
-var sampleKey;
-$(document).ready(function() {
-  guestSignIn();
-
-  setTimeout(function() {
-    setProfileData();
-  }, 1000);
-
-  setTimeout(function() {
-    var queryString = "https://api.edamam.com/search?q=";
-    var key = "&app_id=3f5ead16&app_key=c225ae2c7c6a61ce84c5a6514777dbd2";
-
-    $.ajax({
-      url: queryString + "chicken" + key,
-      method: "GET"
-    }).then(function(response) {
-      saveRecipe(response.hits[0].recipe, "meat");
-      saveRecipe(response.hits[1].recipe, "salad");
-      saveRecipe(response.hits[2].recipe, "eggs");
-    });
-  }, 2000);
-
-  setTimeout(function() {
-    fetchRecipes();
-  }, 5000);
-  setTimeout(function() {
-    console.log("deleting " + sampleKey);
-    deleteRecipe(sampleKey);
-  }, 10000);
-});
