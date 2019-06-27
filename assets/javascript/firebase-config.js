@@ -11,5 +11,8 @@
   };
   
   // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
+firebase.initializeApp(firebaseConfig);
+
+var key = "&app_id=7e374ec0&app_key=b02070a6f2b8d004f6d68db8a317ab84";
+
 
