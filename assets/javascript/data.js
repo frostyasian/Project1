@@ -6,7 +6,6 @@ var storedRecipeKeys = [];
 //a function called when a new user is created
 function setProfileData() {
   var timeInMilis = new Date().getTime(); //this is a time string in miliseconds since Jan 1, 1970
-  console.log(timeInMilis);
   userProfileRef
     .set({
       userName: currentUser.displayName,
@@ -20,7 +19,7 @@ function setProfileData() {
 }
 
 //a function to call when updating a user's profile. dataObject
-//is an object that must contain keys alerady present in the user
+//is an object that must contain keys already present in the user
 //profile directory! Only pass keys that are being updated, otherwise data may be lost.
 function updateProfileData(userProfileRef, dataObject = {}) {
   userProfileRef.update(dataObject).catch(function(err) {
@@ -79,11 +78,10 @@ function saveRecipe(r, label) {
   storedRecipeCache.push(recipeObject);
   storedRecipeKeys.push(key);
 
-  console.log(key);
   sampleKey = key;
   userRecipeBoxRef
     .child(key) //this is how to access sub directories. THis only works if the key exists, which is why the code on line 61 is so important.
-    .set(recipeObject) //this method fials for any object key that takes a value of undefined
+    .set(recipeObject) //this method fails for any object key that takes a value of undefined
     .then(function() {
       console.log("recipe stored");
     })
@@ -126,33 +124,33 @@ function deleteRecipe(key) {
 //Automated User Gen and test data
 //this method will fail if you did not link your database to the project in the firebase-config.js file
 //or if you did not set up authentication in your database
-var sampleKey;
-$(document).ready(function() {
-  guestSignIn();
+// var sampleKey;
+// $(document).ready(function() {
+//   guestSignIn();
 
-  setTimeout(function() {
-    setProfileData();
-  }, 1000);
+//   setTimeout(function() {
+//     setProfileData();
+//   }, 1000);
 
-  setTimeout(function() {
-    var queryString = "https://api.edamam.com/search?q=";
-    var key = "&app_id=3f5ead16&app_key=c225ae2c7c6a61ce84c5a6514777dbd2";
+//   setTimeout(function() {
+//     var queryString = "https://api.edamam.com/search?q=";
+//
 
-    $.ajax({
-      url: queryString + "chicken" + key,
-      method: "GET"
-    }).then(function(response) {
-      saveRecipe(response.hits[0].recipe, "meat");
-      saveRecipe(response.hits[1].recipe, "salad");
-      saveRecipe(response.hits[2].recipe, "eggs");
-    });
-  }, 2000);
+//     $.ajax({
+//       url: queryString + "chicken" + key,
+//       method: "GET"
+//     }).then(function(response) {
+//       saveRecipe(response.hits[0].recipe, "meat");
+//       saveRecipe(response.hits[1].recipe, "salad");
+//       saveRecipe(response.hits[2].recipe, "eggs");
+//     });
+//   }, 2000);
 
-  setTimeout(function() {
-    fetchRecipes();
-  }, 5000);
-  setTimeout(function() {
-    console.log("deleting " + sampleKey);
-    deleteRecipe(sampleKey);
-  }, 10000);
-});
+//   setTimeout(function() {
+//     fetchRecipes();
+//   }, 5000);
+//   setTimeout(function() {
+//     console.log("deleting " + sampleKey);
+//     deleteRecipe(sampleKey);
+//   }, 10000);
+// });

@@ -1,0 +1,91 @@
+#recipe-box {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  box-sizing: border-box;
+}
+
+.header {
+  display: flex;
+  background-color: #edf5e1;
+  width: 405px;
+  font-size: 16px;
+  height: 36px;
+  box-sizing: border-box;
+  border-left: 1px solid #05386b;
+}
+
+.tab {
+  height: 100%;
+  width: 135px;
+  line-height: 36px;
+  text-align: center;
+  box-sizing: border-box;
+  border-bottom: 1px solid #05386b;
+}
+
+#tab-select {
+  height: 36px;
+  position: relative;
+  z-index: 100;
+  border-left: 1px solid #05386b;
+  border-right: 1px solid #05386b;
+  overflow: hidden;
+  cursor: pointer;
+  transition: height, 0.5s;
+}
+
+#content {
+  border-left: 1px solid #05386b;
+  background-color: #edf5e1;
+  width: 100%;
+  flex: 1 0 auto;
+}
+
+.tab-option:hover {
+  background-color: #8ee4af;
+}
+
+#add-custom-tab {
+  cursor: pointer;
+  position: relative;
+}
+
+#custom-tab-dialogue {
+  padding: 5px;
+  position: absolute;
+  width: 405px;
+
+  display: none;
+  align-items: center;
+  justify-content: space-evenly;
+  right: 0;
+  top: 36px;
+  border-bottom: 1px solid #05386b;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+#custom-tab-input {
+  width: 325px;
+
+  padding: 5px 5px;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+#custom-tab-input:focus {
+  outline: none;
+  box-shadow: 0 0 3px 1px #05386b;
+}
+
+#tab-all {
+  cursor: pointer;
+}
+
+.active-tab {
+  border-bottom: none;
+}
