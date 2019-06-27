@@ -1,31 +1,63 @@
 var queryString = "https://api.edamam.com/search?q=";
 var searchTerm = "";
-var key = "&app_id=3f5ead16&app_key=c225ae2c7c6a61ce84c5a6514777dbd2";
 
-$("#search-button").on("click", function() {
-  searchTerm = $("#search-input")
+var searchResults = [];
+//the search method performs an ajax get request to the API and returns the results to
+//the searchResults array.
+$("#search-icon").on("click", function() {
+  searchTerm = $("#recipe-search")
     .val()
     .trim();
-
   $.ajax({
-    url: queryString + searchTerm + key,
+    url: queryString + searchTerm + apiKey,
     method: "GET"
   }).then(function(response) {
-    $("#search-term").text(searchTerm);
-    var hits = response.hits;
-    $("#results").empty();
-    console.log(hits[0].recipe);
-    $.each(hits, function(index, value) {
-      var recipe = hits[index].recipe;
-      //display the search result
-      var div = $("<div>");
-      var image = $("<img>").attr("src", recipe.image);
-      var label = $("<a>")
-        .text(recipe.label)
-        .attr("href", recipe.url);
-      var source = $("<p>").text(recipe.source);
-
-      div.append(label, source, image).appendTo($("#results"));
-    });
+    searchResults = [];
+    for (var i = 0; i < response.hits.length; i++) {
+      searchResults.push(response.hits[i].recipe);
+    }
+    displayResults();
   });
 });
+
+//once the results are stored in the searchResults array, this function is called.
+//loop over the array and build the cards for each search result.
+//TODO - remove the method that pushes test data to the array
+function displayResults() {
+  $(".results").empty();
+
+  //remove the above loop before testing with live data
+  for (var i = 0; i < searchResults.length; i++) {
+    var recipe = searchResults[i];
+    var title = recipe.label;
+    var imageUrl = recipe.image;
+    var time = recipe.totalTime; //DEBUG - not all recipes have total time
+    var index = i.toString();
+
+    var card = buildCard(title, imageUrl, time, index);
+    card.appendTo($(".results"));
+  }
+}
+
+function buildCard(title, imgUrl, time, index) {
+  //index points to the recipe object in search results
+  var card = $("<div>")
+    .addClass("card")
+    .attr("data-index", index + "")
+    .attr("data-source", "0");
+  var cardtitle = $("<div>")
+    .attr("id", "card-title")
+    .text(title);
+  var imgDiv = $("<div>").attr("id", "card-img-box");
+
+  var img = $("<img>")
+    .attr("src", imgUrl)
+    .addClass("recipe-card-small");
+  var preptime = $("<div>")
+    .attr("id", "card-time")
+    .text(time);
+
+  imgDiv.append(img);
+  card.append(cardtitle, imgDiv, preptime);
+  return card;
+}
