@@ -106,7 +106,7 @@ input,
   display: flex;
   flex-direction: column;
   right: -10px;
-  width: 405px;
+  width: 0;
   height: calc(100vh - 57px);
   transition: width, 0.5s;
   background-color: #05386b;

@@ -12,8 +12,10 @@ $("#box-click").on("click", function() {
   var isShowing = parseInt(box.attr("data-showing"));
   if (isShowing) {
     box.css("width", "0px").attr("data-showing", "0");
+    $("#box-gap").css("width", "0px");
   } else {
     box.css("width", "405px").attr("data-showing", "1");
+    $("#box-gap").css("width", "405px");
   }
 });
 
@@ -54,6 +56,7 @@ $(document).on("click", ".tab-option", function() {
   var index = parseInt($(this).attr("value"));
   $("#tab-label").text(recipeTabs[index]);
   $("#tab-select").attr("value", index + "");
+  updateRecipeBox();
 });
 
 $("#tab-plus-icon").on("click", function() {
@@ -133,4 +136,129 @@ $("#save-recipe-button").on("click", function() {
   //movethe recipe to the recipe-box, index the recipe accordingly, push to server, etc.
 });
 
-$(document).on("click", ".card", function() {});
+function displayRecipe(index, sourceArray) {
+  var rec = sourceArray[index];
+  //grab the modal stored in the storage div and make a copy of it.
+  var modal = $("#recipe-display-modal");
+  $("#save-recipe-button").attr("data-index", index.toString());
+  //populate the recipe-specific data to the modal
+  $("#recipe-modal-image").attr("src", rec.image);
+  //populate the user tabs from the recipe-tabs array
+  var dropdownLabel = $("#card-tab-label");
+  dropdownLabel.detach();
+  $("#card-tab-select").empty();
+  for (var i = 0; i < recipeTabs.length; i++) {
+    var option = $("<div>")
+      .addClass("card-tab-option")
+      .attr("value", i.toString())
+      .text(recipeTabs[i]);
+    $("#card-tab-select").append(option);
+  }
+  dropdownLabel.prependTo($("#card-tab-select"));
+  //label the dropdown with help text
+  $("#card-tab-label").text("save recipe to...");
+  //update the recipe title
+  $("#recipe-modal-title").text(rec.label);
+  //update the recipe time
+  var time = parseInt(rec.totalTime);
+  var hours = Math.floor(time / 60);
+  var minutes = Math.round(time % 60);
+  $("#recipe-modal-time").text(hours + " hours " + minutes + " minutes");
+  //update the recipe ingredients
+  var ingredients = rec.ingredientLines;
+  var list = $("#recipe-modal-ingredients");
+  list.empty();
+  ingredients.forEach(ingredient => {
+    list.append("<li>" + ingredient + "</li>");
+  });
+  //update the recipe external link
+  var link = $("#recipe-modal-link");
+  link.attr("href", rec.url);
+  var host = rec.url.split("/")[2];
+  link.text(host + " - " + rec.label);
+
+  modal.detach().appendTo($(".results"));
+}
+
+$(document).on("click", ".card,.recipe-card-insert", function() {
+  //get the index of the recipe and pull the data object from searchResults array
+  var index = parseInt($(this).attr("data-index"));
+  //data-source points to the array where the recipe information is stored
+  var source = parseInt($(this).attr("data-source"));
+  switch (source) {
+    case 0:
+      displayRecipe(index, searchResults);
+      break;
+    case 1:
+      displayRecipe(index, storedRecipeCache);
+      break;
+    default:
+      console.log("defualt at logic.js:194");
+  }
+});
+
+$("#card-tab-cancel-icon").on("click", function() {
+  $("#recipe-display-modal")
+    .detach()
+    .appendTo($("#storage"));
+});
+
+$("#save-recipe-button").on("click", function() {
+  var newRecipe = searchResults[parseInt($(this).attr("data-index"))];
+  var label = recipeTabs[parseInt($("#card-tab-select").attr("value"))];
+  //save the newRecipe to the local cache and the server using saveRecipe in data.js
+  saveRecipe(newRecipe, label);
+
+  $("#recipe-display-modal")
+    .detach()
+    .appendTo($("#storage"));
+});
+
+function updateRecipeBox() {
+  $("#recipe-box")
+    .detach()
+    .appendTo($("#box")); //this is for testing...
+  $("#content").empty();
+  for (var i = 0; i < storedRecipeCache.length; i++) {
+    var r = storedRecipeCache[i];
+    //console.log(storedRecipeCache);
+    var currentTab = $("#tab-label").text();
+    if (currentTab == r.tab) {
+      var insert = $("<div>")
+        .addClass("recipe-card-insert")
+        .attr("data-index", i.toString())
+        .attr("data-source", "1");
+      var imgURL = r.image;
+      var image = $("<img>")
+        .attr("src", imgURL)
+        .addClass("recipe-image-tiny");
+      var title = r.label;
+      var time = parseInt(r.totalTime);
+      var hours = Math.floor(time / 60);
+      var minutes = Math.round(time % 60);
+      var timestring = hours + " hours " + minutes + " minutes";
+      var div = $("<div>")
+        .addClass("recipe-insert-info")
+        .append("<div>" + title + "</div>", "<div>" + timestring + "</div>");
+      insert.append(image, div).appendTo($("#content"));
+    }
+  }
+}
+
+$(document).on("click", "#swap-auth-in,#swap-auth-up", function() {
+  var inModal = $("#auth-modal-in");
+  var upModal = $("#auth-modal-up");
+  var storage = $("#storage");
+  var box = $("#box");
+  var swapTo = $(this)
+    .attr("id")
+    .split("-")
+    .pop();
+  if (swapTo === "up") {
+    inModal.detach().appendTo(storage);
+    upModal.detach().appendTo(box);
+  } else {
+    inModal.detach().appendTo(box);
+    upModal.detach().appendTo(storage);
+  }
+});

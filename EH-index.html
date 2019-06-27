@@ -47,33 +47,28 @@
         <div class="results">
             
         </div>
-        <div id="box" data-showing="1"></div>
+        <div id="box-gap"></div>
+        <div id="box" data-showing="0"></div>
       </div>
     </div>
     <div id="storage">
       <div id="alert" class="hidden">Some Alert Message</div>
       <!-- recipe details modal -->
-      <div id="recipe-display-modal">
-        <img class="recipe-card-big" src="https://www.edamam.com/web-img/d4b/d4bb1e6c7a6c3738d8e01707eb0ad83d.jpg" alt="recipe image" />
+      <div id="recipe-display-modal" >
+        <img id="recipe-modal-image" class="recipe-card-big" src="" alt="recipe image" />
         <div class="right">
           <div class="top-bar">
               <div  id="card-tab-select" data-state="0" value="0">
                 <span id="card-tab-label">save to...</span>
-                <div class="card-tab-option" value="0">tab 0</div>
-                <div class="card-tab-option" value="1">tab 1</div>
-                <div class="card-tab-option" value="2">tab 2</div>
-                <div class="card-tab-option" value="3">tab 3</div>
-                <div class="card-tab-option" value="4">tab 4</div>
-                <div class="card-tab-option" value="5">tab 5</div>
-                <div class="card-tab-option" value="6">tab 6</div>
+                
               </div>
               <button id="save-recipe-button">save</button>
               <i id="card-tab-cancel-icon" class="far fa-window-close"></i>
           </div>
-          <h3>Some Recipe Title</h3>
-          <h4><i class="fas fa-stopwatch pad-right"></i> 7 hours 30 minutes</h3>
+          <h3 id="recipe-modal-title">Some Recipe Title</h3>
+          <h4><i class="fas fa-stopwatch pad-right"></i> <span id="recipe-modal-time">7 hours 30 minutes</span></h3>
           <div class="columns">
-            <ul>
+            <ul id="recipe-modal-ingredients">
               <li>1 chicken, about 3.5 to 4 pounds</li>
               <li>1 lemon</li>
               <li>1 blood orange</li>
@@ -82,7 +77,7 @@
               <li>1/2 cup chicken broth</li>
             </ul>
           </div>
-          <a href="https://food52.com/recipes/3403-citrus-roasted-chicken" target="_blank">food52.com - citrus-roasted-chicken</a>
+          <a id ="recipe-modal-link" href="#" target="_blank">food52.com - citrus-roasted-chicken</a>
         </div>
       </div>
       <!-- The Sign-up Modal -->
@@ -94,29 +89,28 @@
         <input type="email" id="sign-up-email" class="modal-input" placeholder="arya.stark@winterfell.com" />
         <div class="modal-label">password</div>
         <input type="password" id="sign-up-password" class="modal-input" />
-        <input type="submit" id="sign-in" value="sign in" />
+        <input type="submit" id="sign-up" value="sign up" />
         <div id="alt-links">
-          <div class="alt-link" id="swap-auth">sign up</div>
-          <div class="alt-link" id="guest-auth">try it out</div>
+          <div class="alt-link" id="swap-auth-in">sign in</div>
+          <div class="alt-link" id="guest-auth-in">try it out</div>
         </div>
       </div>
       <!-- The sign-in Modal -->
       <div id="auth-modal-in">
         <h3 id="modal-message">sign in</h3>
         <div class="modal-label">email address</div>
-        <input type="email" id="sign-in-email" class="modal-input" placeholder="arya.stark@winterfell.north" />
+        <input type="email" id="sign-in-email" class="modal-input" placeholder="arya.stark@winterfell.com" />
         <div class="modal-label">password</div>
         <input type="password" id="sign-in-password" class="modal-input" />
         <input type="submit" id="sign-in" value="sign in" />
         <div id="alt-links">
-          <div class="alt-link" id="swap-auth">sign up</div>
-          <div class="alt-link" id="guest-auth">try it out</div>
+          <div class="alt-link" id="swap-auth-up">sign up</div>
+          <div class="alt-link" id="guest-auth-up">try it out</div>
         </div>
       </div>
       <!-- Recipe Box Modal -->
       <div id="recipe-box">
         <div class="header">
-          <div class="tab" id="tab-all">All</div>
           <div class="tab" id="tab-select" data-state="0" value="0">
             <span id="tab-label">tab 0</span>
             <div class="tab-option" value="0">tab 0</div>
@@ -141,9 +135,9 @@
     </div>
 
     <!-- Local Scripts -->
-    <!-- <script src="assets/javascript/firebase-config.js"></script>
+    <script src="assets/javascript/firebase-config.js"></script>
     <script src="assets/javascript/auth.js"></script>
-    <script src="assets/javascript/data.js"></script>-->
+    <script src="assets/javascript/data.js"></script>
     <script src="assets/javascript/search.js"></script>
     <script src="assets/javascript/logic.js"></script>
     <script src="assets/javascript/sample-result.js"></script>

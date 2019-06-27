@@ -1,9 +1,9 @@
 #recipe-display-modal {
-  width: 650px;
-  min-width: 300px;
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
   background-color: #edf5e1;
   border-radius: 15px;
   padding: 5px;
@@ -13,8 +13,7 @@
   left: 50%;
   transform: translate(-50%, -50%);
   box-shadow: 0 0 4px 1px #252525;
-  transition: height, 1s;
-  transition: width, 1s;
+  font-size: 12px;
 }
 
 .columns {
@@ -38,11 +37,15 @@ h4 {
 }
 
 .recipe-card-big {
-  width: 300px;
-  height: 300px;
+  width: 200px;
+  height: 200px;
   border-radius: 10px;
 }
-
+.recipe-card-small {
+  width: 150px;
+  height: 150px;
+  border-radius: 5px;
+}
 #card-tab-select {
   overflow: hidden;
   height: 24px;

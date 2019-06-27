@@ -168,7 +168,7 @@ firebase.auth().onAuthStateChanged(function(user) {
     //  2. a new user creates an account
     //  3. someone signs in anonymously (as a guest)
     //this block is NOT reached when an anonymous account is linked to a new account
-    //TODO - populate the UI with profile data
+
     //TODO - populate the recipe box from the user's database directory
     currentUser = firebase.auth().currentUser;
     //a redundancy in the code that ensures that the database references are made for users who refresh the page or chose to stay logged in
@@ -176,33 +176,34 @@ firebase.auth().onAuthStateChanged(function(user) {
     userProfileRef = database.ref("/users/" + currentUser.uid + "/profile");
     userRecipeBoxRef = database.ref("/users/" + currentUser.uid + "/recipe_box");
     fetchRecipes();
-    console.log(currentUser.uid + ": has fired the onAuthStateChanged event");
+    //update the UI with user profile data
+    $("#box-click").text(currentUser.displayName);
   } else {
     //this block is reached when the poage loads without a user logged in, or a user signs out, or navigates away from the page, or the tab/window is closed
     //I am unsure of how this code block behaves when the latter of the four conditions is undertaken. Testing is required.
 
+    //on page load - if there is no user, display the sign-in modal
+    var modal = $("#auth-modal-in");
+    modal.detach().appendTo($("#box"));
     //best practices dictate that the instance of the user is reset to prevent any other functions from accessing
     //data or methods attached to the user that left.
     console.log("a user logged out");
     currentUser = undefined;
     storedRecipeCache = [];
     storedRecipeKeys = [];
+    searchResults = [];
+    $("#box-click").text("Welcome");
+    //there are other things to add to this list.
+    //1. empty the box div!
   }
 });
 
 //The following routines may or may not be needed for the UI - they were developed for testing but can be ported to the main project
-function displayUserData(name, email) {
-  $("#user-info-name").text(name);
-  $("#user-info-email").text(email);
-  $("#user-info-displayName").text(currentUser.displayName);
-  $("#user-info-isAnonymous").text(currentUser.isAnonymous);
-  $("#user-info-uid").text(currentUser.uid);
-  //TODO - read from the database to pull the stored data keys and data
-}
 
 //sign up a user - this method should only be reachable for anonymous user present or no user present states.
 //a logged in user should never reach this function.
-$("#sign-up-button").on("click", function() {
+$("#sign-up").on("click", function(event) {
+  event.preventDefault();
   var userName = $("#sign-up-name")
     .val()
     .trim();
@@ -221,7 +222,8 @@ $("#sign-up-button").on("click", function() {
 });
 
 //sign in a user
-$("#sign-in-button").on("click", function() {
+$("#sign-in").on("click", function(event) {
+  event.preventDefault();
   var email = $("#sign-in-email")
     .val()
     .trim();
@@ -232,11 +234,12 @@ $("#sign-in-button").on("click", function() {
 });
 
 //sign in a user anonymously
-$("#anonymous-login").on("click", function() {
+$(document).on("click", "#guest-auth-in,#guest-auth-up", function() {
   guestSignIn();
 });
 
 //logging out a user
+
 $("#logout").on("click", function() {
   firebase
     .auth()

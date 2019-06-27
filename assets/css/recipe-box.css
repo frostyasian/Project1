@@ -20,7 +20,7 @@
 
 .tab {
   height: 100%;
-  width: 135px;
+  width: 50%;
   line-height: 36px;
   text-align: center;
   box-sizing: border-box;
@@ -36,6 +36,7 @@
   overflow: hidden;
   cursor: pointer;
   transition: height, 0.5s;
+  background-color: #edf5e1;
 }
 
 #content {
@@ -58,7 +59,7 @@
   padding: 5px;
   position: absolute;
   width: 405px;
-
+  background-color: #edf5e1;
   display: none;
   align-items: center;
   justify-content: space-evenly;
@@ -88,4 +89,31 @@
 
 .active-tab {
   border-bottom: none;
+}
+
+.recipe-card-insert {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-start;
+  box-sizing: border-box;
+  padding: 5px;
+  margin: 2px 0;
+  border-bottom: 1px solid #05386b;
+  border-top: 1px solid #05386b;
+  cursor: pointer;
+}
+
+.recipe-insert-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-left: 10px;
+}
+
+.recipe-image-tiny {
+  width: 75px;
+  height: 75px;
+  border-radius: 5px;
 }
