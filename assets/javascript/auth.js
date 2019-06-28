@@ -84,7 +84,7 @@ function login(email, password) {
       //link to the database directory for the user's recipe box
       userRecipeBoxRef = database.ref("/users/" + currentUser.uid + "/recipe_box");
       //TODO - load the user's recipe box and profile information, if any
-      console.log(currentUser.uid + ": signed into account");
+      $("#box-click").text(currentUser.displayName);
     })
     .catch(function(err) {
       console.log("ERROR -" + err.code + ": " + err.message);
@@ -108,7 +108,7 @@ function guestSignIn() {
         })
         .then(function() {
           //any actions that needs to happed after the display name is updated goes here
-          console.log(currentUser.uid + ": is anonymous");
+          $("#box-click").text(currentUser.displayName);
         })
         .catch(function(err) {
           console.log("ERROR -" + err.code + ": " + err.message);
@@ -148,6 +148,7 @@ function linkGuestToAccount(email, password, userName) {
         .then(function() {
           //TODO - update the UI to reflect the user name changes, because linking acounts
           //does not change the user status, and so the next function defined below will not fire
+          $("#box-click").text(currentUser.displayName);
         })
         .catch(function(err) {
           console.log("ERROR -" + err.code + ": " + err.message);
@@ -219,6 +220,7 @@ $("#sign-up").on("click", function(event) {
   } else {
     createNewUser(email, password, userName);
   }
+  flowPastLogin($(this));
 });
 
 //sign in a user
@@ -231,13 +233,24 @@ $("#sign-in").on("click", function(event) {
     .val()
     .trim();
   login(email, password);
+  flowPastLogin($(this));
 });
 
 //sign in a user anonymously
 $(document).on("click", "#guest-auth-in,#guest-auth-up", function() {
   guestSignIn();
+  flowPastLogin($($(this).parent()));
 });
-
+//a function that loads the recipe box for a user / guest and closes the box modal after login
+function flowPastLogin(self) {
+  $(self.parent())
+    .detach()
+    .appendTo($("#storage"));
+  $("#recipe-box")
+    .detach()
+    .appendTo($("#box"));
+  $("#box-click").trigger("click");
+}
 //logging out a user
 
 $("#logout").on("click", function() {
