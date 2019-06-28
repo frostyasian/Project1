@@ -1,16 +1,17 @@
-  // Your web app's Firebase configuration
-  // TPL's config
-  var firebaseConfig = {
-    apiKey: "AIzaSyDaza4VJVqs3Uj3C06HQtutWCgsrp160T8",
-    authDomain: "recipe-box-2d8a9.firebaseapp.com",
-    databaseURL: "https://recipe-box-2d8a9.firebaseio.com",
-    projectId: "recipe-box-2d8a9",
-    storageBucket: "",
-    messagingSenderId: "1055026758867",
-    appId: "1:1055026758867:web:862286e5f0ea15e8"
-  };
-  
+
+var firebaseConfig = {
+  apiKey: "AIzaSyDfQdEV3qyvJiCn8DDAau9stCrPERFbVLQ",
+  authDomain: "project1-bab30.firebaseapp.com",
+  databaseURL: "https://project1-bab30.firebaseio.com",
+  projectId: "project1-bab30",
+  storageBucket: "",
+  messagingSenderId: "686045408466",
+  appId: "1:686045408466:web:b65d6661e432870d"
+};
+
+
   // Initialize Firebase
+
 firebase.initializeApp(firebaseConfig);
 
 // TPL's Edamam API key
