@@ -179,6 +179,9 @@ firebase.auth().onAuthStateChanged(function(user) {
     fetchRecipes();
     //update the UI with user profile data
     $("#box-click").text(currentUser.displayName);
+    $("#recipe-box")
+      .detach()
+      .appendTo($("#box"));
   } else {
     //this block is reached when the poage loads without a user logged in, or a user signs out, or navigates away from the page, or the tab/window is closed
     //I am unsure of how this code block behaves when the latter of the four conditions is undertaken. Testing is required.

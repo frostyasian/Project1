@@ -160,10 +160,8 @@ function displayRecipe(index, sourceArray) {
   //update the recipe title
   $("#recipe-modal-title").text(rec.label);
   //update the recipe time
-  var time = parseInt(rec.totalTime);
-  var hours = Math.floor(time / 60);
-  var minutes = Math.round(time % 60);
-  $("#recipe-modal-time").text(hours + " hours " + minutes + " minutes");
+
+  $("#recipe-modal-time").text(formatTime(rec.totalTime));
   //update the recipe ingredients
   var ingredients = rec.ingredientLines;
   var list = $("#recipe-modal-ingredients");
@@ -233,16 +231,28 @@ function updateRecipeBox() {
         .attr("src", imgURL)
         .addClass("recipe-image-tiny");
       var title = r.label;
-      var time = parseInt(r.totalTime);
-      var hours = Math.floor(time / 60);
-      var minutes = Math.round(time % 60);
-      var timestring = hours + " hours " + minutes + " minutes";
+
+      var timestring = formatTime(r.totalTime);
       var div = $("<div>")
         .addClass("recipe-insert-info")
         .append("<div>" + title + "</div>", "<div>" + timestring + "</div>");
       insert.append(image, div).appendTo($("#content"));
     }
   }
+}
+
+//a function that takes in a time string from the recipe object and retuns a formatted time string for display
+//the formatted time string is <hours> 'hours' + <minutes> 'minutes'
+function formatTime(time) {
+  //turn the time string into an integer and compute the hours and minutes
+  var timeInMinutes = parseInt(time);
+  //only compute the hours and minutes if time is nonzero
+  if (timeInMinutes !== 0) {
+    var hours = Math.floor(timeInMinutes / 60);
+    var minutes = Math.round(timeInMinutes % 60);
+    return hours + " hours " + minutes + " minutes";
+  }
+  return "no time data exists for this recipe";
 }
 
 $(document).on("click", "#swap-auth-in,#swap-auth-up", function() {
@@ -260,5 +270,23 @@ $(document).on("click", "#swap-auth-in,#swap-auth-up", function() {
   } else {
     inModal.detach().appendTo(box);
     upModal.detach().appendTo(storage);
+  }
+});
+
+$(document).on("keyup", function(event) {
+  if (event.keyCode !== 13) return; //only perform the following code block if the enter key is pressed
+  //get the object that has focus and determine what action needs to be taken
+  var activeElement = $(document.activeElement);
+  var targetId = activeElement.attr("id");
+  console.log(targetId);
+
+  if (targetId === "recipe-search") {
+    $("#search-icon").trigger("click");
+  } else if (targetId === "sign-in-email") {
+    $("#sign-in-password").focus();
+  } else if (targetId === "sign-in-password") {
+    $("#sign-in").trigger("click");
+  } else if (targetId === "custom-tab-input") {
+    $("#tab-okay-icon").trigger("click");
   }
 });

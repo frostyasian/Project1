@@ -46,16 +46,16 @@ function buildCard(title, imgUrl, time, index) {
     .attr("data-index", index + "")
     .attr("data-source", "0");
   var cardtitle = $("<div>")
-    .attr("id", "card-title")
+    .addClass("card-title")
     .text(title);
-  var imgDiv = $("<div>").attr("id", "card-img-box");
+  var imgDiv = $("<div>").addClass("card-img-box");
 
   var img = $("<img>")
     .attr("src", imgUrl)
     .addClass("recipe-card-small");
   var preptime = $("<div>")
-    .attr("id", "card-time")
-    .text(time);
+    .addClass("card-time")
+    .text(formatTime(time));
 
   imgDiv.append(img);
   card.append(cardtitle, imgDiv, preptime);
