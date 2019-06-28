@@ -31,7 +31,6 @@
   height: 36px;
   position: relative;
   z-index: 100;
-  border-left: 1px solid #05386b;
   border-right: 1px solid #05386b;
   overflow: hidden;
   cursor: pointer;
@@ -68,6 +67,7 @@
   border-bottom: 1px solid #05386b;
   overflow: hidden;
   box-sizing: border-box;
+  border-left: 1px solid #05386b;
 }
 
 #custom-tab-input {
