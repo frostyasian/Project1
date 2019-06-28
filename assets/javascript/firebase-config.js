@@ -1,3 +1,4 @@
+
 var firebaseConfig = {
   apiKey: "AIzaSyDfQdEV3qyvJiCn8DDAau9stCrPERFbVLQ",
   authDomain: "project1-bab30.firebaseapp.com",
@@ -7,7 +8,12 @@ var firebaseConfig = {
   messagingSenderId: "686045408466",
   appId: "1:686045408466:web:b65d6661e432870d"
 };
-// Initialize Firebase
+
+
+  // Initialize Firebase
+
 firebase.initializeApp(firebaseConfig);
 
-var apiKey = "&app_id=3f5ead16&app_key=c225ae2c7c6a61ce84c5a6514777dbd2";
+var key = "&app_id=7e374ec0&app_key=b02070a6f2b8d004f6d68db8a317ab84";
+
+
