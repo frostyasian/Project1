@@ -191,14 +191,15 @@ firebase.auth().onAuthStateChanged(function(user) {
     modal.detach().appendTo($("#box"));
     //best practices dictate that the instance of the user is reset to prevent any other functions from accessing
     //data or methods attached to the user that left.
-    console.log("a user logged out");
     currentUser = undefined;
     storedRecipeCache = [];
     storedRecipeKeys = [];
     searchResults = [];
     $("#box-click").text("Welcome");
     //there are other things to add to this list.
-    //1. empty the box div!
+    $($("#box").children())
+      .detach()
+      .appendTo("#storage");
   }
 });
 
