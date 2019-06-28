@@ -245,7 +245,7 @@ function updateRecipeBox() {
 //the formatted time string is <hours> 'hours' + <minutes> 'minutes'
 function formatTime(time) {
   //turn the time string into an integer and compute the hours and minutes
-  var timeInMinutes = parseint(time);
+  var timeInMinutes = parseInt(time);
   //only compute the hours and minutes if time is nonzero
   if (timeInMinutes !== 0) {
     var hours = Math.floor(timeInMinutes / 60);
@@ -270,5 +270,17 @@ $(document).on("click", "#swap-auth-in,#swap-auth-up", function() {
   } else {
     inModal.detach().appendTo(box);
     upModal.detach().appendTo(storage);
+  }
+});
+
+$(document).on("keyup", function(event) {
+  if (event.keyCode !== 13) return; //only perform the following code block if the enter key is pressed
+  //get the object that has focus and determine what action needs to be taken
+  var activeElement = $(document.activeElement);
+  var targetId = activeElement.attr("id");
+  console.log(targetId);
+
+  if (targetId === "recipe-search") {
+    $("#search-icon").trigger("click");
   }
 });
