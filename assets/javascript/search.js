@@ -55,7 +55,7 @@ function buildCard(title, imgUrl, time, index) {
     .addClass("recipe-card-small");
   var preptime = $("<div>")
     .attr("id", "card-time")
-    .text(time);
+    .text(formatTime(time));
 
   imgDiv.append(img);
   card.append(cardtitle, imgDiv, preptime);
