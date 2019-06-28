@@ -1,13 +1,18 @@
-var firebaseConfig = {
-  apiKey: "AIzaSyCr7ZdjRuOSChN3BIdNNa2l3SEtgQiHl2Y",
-  authDomain: "recipe-box-d4385.firebaseapp.com",
-  databaseURL: "https://recipe-box-d4385.firebaseio.com",
-  projectId: "recipe-box-d4385",
-  storageBucket: "",
-  messagingSenderId: "813897633460",
-  appId: "1:813897633460:web:789fb9b6748cf3e2"
-};
-// Initialize Firebase
+  // Your web app's Firebase configuration
+  // TPL's config
+  var firebaseConfig = {
+    apiKey: "AIzaSyDaza4VJVqs3Uj3C06HQtutWCgsrp160T8",
+    authDomain: "recipe-box-2d8a9.firebaseapp.com",
+    databaseURL: "https://recipe-box-2d8a9.firebaseio.com",
+    projectId: "recipe-box-2d8a9",
+    storageBucket: "",
+    messagingSenderId: "1055026758867",
+    appId: "1:1055026758867:web:862286e5f0ea15e8"
+  };
+  
+  // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
-var apiKey = "&app_id=3f5ead16&app_key=c225ae2c7c6a61ce84c5a6514777dbd2";
+var key = "&app_id=7e374ec0&app_key=b02070a6f2b8d004f6d68db8a317ab84";
+
+
