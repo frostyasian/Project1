@@ -36,10 +36,47 @@ function createNewUser(email, password, userName) {
     .createUserWithEmailAndPassword(email, password)
     .catch(function(err) {
       console.log("ERROR -" + err.code + ": " + err.message);
+      var email = $("#sign-up-email");
+      var password = $("#sign-up-password");
+      var alert = $("#auth-alert-up");
+      if (err.code.includes("email")) {
+        alert
+          .text(err.message)
+          .toggleClass("hidden")
+          .toggleClass("bad");
+        email.toggleClass("error");
+        setTimeout(function() {
+          email.toggleClass("error");
+          alert.toggleClass("hidden").toggleClass("bad");
+        }, 3000);
+      } else if (err.code.includes("password")) {
+        alert
+          .text(err.message)
+          .toggleClass("hidden")
+          .toggleClass("bad");
+        password.toggleClass("error");
+        setTimeout(function() {
+          password.toggleClass("error");
+          alert.toggleClass("hidden").toggleClass("bad");
+        }, 3000);
+      } else if (err.code == "auth/user-not-found") {
+        alert
+          .text("No account associated with this email. Please try again.")
+          .toggleClass("hidden")
+          .toggleClass("bad");
+        password.toggleClass("error");
+        email.toggleClass("error");
+        setTimeout(function() {
+          password.toggleClass("error");
+          email.toggleClass("error");
+          alert.toggleClass("hidden").toggleClass("bad");
+        }, 3000);
+      }
     })
     .then(function() {
       //at this point, the user is logged in
       //grab the user pointer and store it in the global variable defined above
+      flowPastLogin($("#auth-modal-up"));
       currentUser = firebase.auth().currentUser;
       //update the user profile to include their name
       currentUser
@@ -47,8 +84,7 @@ function createNewUser(email, password, userName) {
           displayName: userName
         })
         .then(function() {
-          //TODO - actions to take when a user makes an account
-          console.log(currentUser.uid + ": created account");
+          $("#box-click").text(currentUser.displayName);
         })
         .catch(function(err) {
           console.log("ERROR -" + err.code + ": " + err.message);
@@ -69,7 +105,7 @@ function createNewUser(email, password, userName) {
 }
 
 function login(email, password) {
-  //the signin function links the global user variable and directory paths to the current user
+  //the sign in function links the global user variable and directory paths to the current user
   firebase
     .auth()
     .signInWithEmailAndPassword(email, password)
@@ -85,9 +121,46 @@ function login(email, password) {
       userRecipeBoxRef = database.ref("/users/" + currentUser.uid + "/recipe_box");
       //TODO - load the user's recipe box and profile information, if any
       $("#box-click").text(currentUser.displayName);
+      flowPastLogin($("#auth-modal-in"));
     })
     .catch(function(err) {
-      console.log("ERROR -" + err.code + ": " + err.message);
+      console.log("ERROR - " + err.code + ": " + err.message);
+      var email = $("#sign-in-email");
+      var password = $("#sign-in-password");
+      var alert = $("#auth-alert-in");
+      if (err.code.includes("email")) {
+        alert
+          .text(err.message)
+          .toggleClass("hidden")
+          .toggleClass("bad");
+        email.toggleClass("error");
+        setTimeout(function() {
+          email.toggleClass("error");
+          alert.toggleClass("hidden").toggleClass("bad");
+        }, 3000);
+      } else if (err.code.includes("password")) {
+        alert
+          .text(err.message)
+          .toggleClass("hidden")
+          .toggleClass("bad");
+        password.toggleClass("error");
+        setTimeout(function() {
+          password.toggleClass("error");
+          alert.toggleClass("hidden").toggleClass("bad");
+        }, 3000);
+      } else if (err.code == "auth/user-not-found") {
+        alert
+          .text("No account associated with this email. Please try again.")
+          .toggleClass("hidden")
+          .toggleClass("bad");
+        password.toggleClass("error");
+        email.toggleClass("error");
+        setTimeout(function() {
+          password.toggleClass("error");
+          email.toggleClass("error");
+          alert.toggleClass("hidden").toggleClass("bad");
+        }, 3000);
+      }
     });
 }
 
@@ -100,6 +173,7 @@ function guestSignIn() {
       //with anonymous logins, firebase.auth() creates a user token just as in the above functions.
       //we will use that token in the same way as we would for a regular user who just signed up for the first time
       //grab the user pointer and store it in the global variable defined above
+      flowPastLogin($($("#box").children()));
       currentUser = firebase.auth().currentUser;
       //update the user profile to include their name
       currentUser
@@ -179,6 +253,7 @@ firebase.auth().onAuthStateChanged(function(user) {
     fetchRecipes();
     //update the UI with user profile data
     $("#box-click").text(currentUser.displayName);
+    $("#user-data").append("<span id='logout'>sign out</span>");
     $("#recipe-box")
       .detach()
       .appendTo($("#box"));
@@ -187,18 +262,20 @@ firebase.auth().onAuthStateChanged(function(user) {
     //I am unsure of how this code block behaves when the latter of the four conditions is undertaken. Testing is required.
 
     //on page load - if there is no user, display the sign-in modal
+    $($("#box").children())
+      .detach()
+      .appendTo($("#storage"));
     var modal = $("#auth-modal-in");
     modal.detach().appendTo($("#box"));
     //best practices dictate that the instance of the user is reset to prevent any other functions from accessing
     //data or methods attached to the user that left.
-    console.log("a user logged out");
     currentUser = undefined;
     storedRecipeCache = [];
     storedRecipeKeys = [];
     searchResults = [];
+    $("#logout").remove();
     $("#box-click").text("Welcome");
     //there are other things to add to this list.
-    //1. empty the box div!
   }
 });
 
@@ -208,9 +285,24 @@ firebase.auth().onAuthStateChanged(function(user) {
 //a logged in user should never reach this function.
 $("#sign-up").on("click", function(event) {
   event.preventDefault();
+
   var userName = $("#sign-up-name")
     .val()
     .trim();
+  if (userName.length === 0) {
+    var alert = $("#auth-alert-up");
+    var uNameField = $("#sign-up-name");
+    alert
+      .text("you must provide a user name")
+      .toggleClass("hidden")
+      .toggleClass("bad");
+    uNameField.toggleClass("error");
+    setTimeout(function() {
+      uNameField.toggleClass("error");
+      alert.toggleClass("hidden").toggleClass("bad");
+    }, 3000);
+    return;
+  }
   var email = $("#sign-up-email")
     .val()
     .trim();
@@ -223,7 +315,6 @@ $("#sign-up").on("click", function(event) {
   } else {
     createNewUser(email, password, userName);
   }
-  flowPastLogin($(this));
 });
 
 //sign in a user
@@ -236,19 +327,16 @@ $("#sign-in").on("click", function(event) {
     .val()
     .trim();
   login(email, password);
-  flowPastLogin($(this));
 });
 
 //sign in a user anonymously
 $(document).on("click", "#guest-auth-in,#guest-auth-up", function() {
   guestSignIn();
-  flowPastLogin($($(this).parent()));
 });
 //a function that loads the recipe box for a user / guest and closes the box modal after login
 function flowPastLogin(self) {
-  $(self.parent())
-    .detach()
-    .appendTo($("#storage"));
+  console.log(self);
+  self.detach().appendTo($("#storage"));
   $("#recipe-box")
     .detach()
     .appendTo($("#box"));
@@ -256,7 +344,7 @@ function flowPastLogin(self) {
 }
 //logging out a user
 
-$("#logout").on("click", function() {
+$(document).on("click", "#logout", function() {
   firebase
     .auth()
     .signOut()

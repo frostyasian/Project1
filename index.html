@@ -23,7 +23,8 @@
     <link rel="stylesheet" href="assets/css/recipe-box.css" />
     <link rel="stylesheet" href="assets/css/results.css" />
     <link rel="stylesheet" href="assets/css/modals.css" />
-    <title>Document</title>
+    <link rel="stylesheet" href="assets/css/auth.css" />
+    <title>Recipe Box</title>
   </head>
   <body>
     <div class="container">
@@ -40,6 +41,7 @@
         <div class="user-stuff">
           <div id="user-data">
             <span id="box-click">Welcome</span>
+            
           </div>
         </div>
       </div>
@@ -52,7 +54,7 @@
       </div>
     </div>
     <div id="storage">
-      <div id="alert" class="hidden">Some Alert Message</div>
+      
       <!-- recipe details modal -->
       <div id="recipe-display-modal" >
         <img id="recipe-modal-image" class="recipe-card-big" src="" alt="recipe image" />
@@ -83,8 +85,9 @@
       <!-- The Sign-up Modal -->
       <div id="auth-modal-up">
         <h3 id="modal-message">sign up</h3>
+        <div id="auth-alert-up" class="hidden alert ">Some Alert Message</div>
         <div class="modal-label">name</div>
-        <input type="text" id="sign-up-name" class="modal-input" placeholder="arya stark" />
+        <input type="text" id="sign-up-name" class="modal-input" placeholder="arya stark" required/>
         <div class="modal-label">email address</div>
         <input type="email" id="sign-up-email" class="modal-input" placeholder="arya.stark@winterfell.com" />
         <div class="modal-label">password</div>
@@ -98,6 +101,7 @@
       <!-- The sign-in Modal -->
       <div id="auth-modal-in">
         <h3 id="modal-message">sign in</h3>
+        <div id="auth-alert-in" class="hidden alert ">Some Alert Message</div>
         <div class="modal-label">email address</div>
         <input type="email" id="sign-in-email" class="modal-input" placeholder="arya.stark@winterfell.com" />
         <div class="modal-label">password</div>
