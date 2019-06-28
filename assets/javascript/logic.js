@@ -282,5 +282,11 @@ $(document).on("keyup", function(event) {
 
   if (targetId === "recipe-search") {
     $("#search-icon").trigger("click");
+  } else if (targetId === "sign-in-email") {
+    $("#sign-in-password").focus();
+  } else if (targetId === "sign-in-password") {
+    $("#sign-in").trigger("click");
+  } else if (targetId === "custom-tab-input") {
+    $("#tab-okay-icon").trigger("click");
   }
 });
