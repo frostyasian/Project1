@@ -7,3 +7,6 @@
 
 assets/javascript/firebase-config.js
 
+*.sqlite
+/.vs/VSWorkspaceState.json
+*.suo
