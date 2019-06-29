@@ -251,6 +251,7 @@ firebase.auth().onAuthStateChanged(function(user) {
     userProfileRef = database.ref("/users/" + currentUser.uid + "/profile");
     userRecipeBoxRef = database.ref("/users/" + currentUser.uid + "/recipe_box");
     fetchRecipes();
+    fetchRecipeTabs();
     //update the UI with user profile data
     $("#box-click").text(currentUser.displayName);
     $("#user-data").append("<span id='logout'>sign out</span>");
@@ -277,79 +278,4 @@ firebase.auth().onAuthStateChanged(function(user) {
     $("#box-click").text("Welcome");
     //there are other things to add to this list.
   }
-});
-
-//The following routines may or may not be needed for the UI - they were developed for testing but can be ported to the main project
-
-//sign up a user - this method should only be reachable for anonymous user present or no user present states.
-//a logged in user should never reach this function.
-$("#sign-up").on("click", function(event) {
-  event.preventDefault();
-
-  var userName = $("#sign-up-name")
-    .val()
-    .trim();
-  if (userName.length === 0) {
-    var alert = $("#auth-alert-up");
-    var uNameField = $("#sign-up-name");
-    alert
-      .text("you must provide a user name")
-      .toggleClass("hidden")
-      .toggleClass("bad");
-    uNameField.toggleClass("error");
-    setTimeout(function() {
-      uNameField.toggleClass("error");
-      alert.toggleClass("hidden").toggleClass("bad");
-    }, 3000);
-    return;
-  }
-  var email = $("#sign-up-email")
-    .val()
-    .trim();
-  var password = $("#sign-up-password")
-    .val()
-    .trim();
-
-  if (currentUser && currentUser.isAnonymous) {
-    linkGuestToAccount(email, password, userName);
-  } else {
-    createNewUser(email, password, userName);
-  }
-});
-
-//sign in a user
-$("#sign-in").on("click", function(event) {
-  event.preventDefault();
-  var email = $("#sign-in-email")
-    .val()
-    .trim();
-  var password = $("#sign-in-password")
-    .val()
-    .trim();
-  login(email, password);
-});
-
-//sign in a user anonymously
-$(document).on("click", "#guest-auth-in,#guest-auth-up", function() {
-  guestSignIn();
-});
-//a function that loads the recipe box for a user / guest and closes the box modal after login
-function flowPastLogin(self) {
-  console.log(self);
-  self.detach().appendTo($("#storage"));
-  $("#recipe-box")
-    .detach()
-    .appendTo($("#box"));
-  $("#box-click").trigger("click");
-}
-//logging out a user
-
-$(document).on("click", "#logout", function() {
-  firebase
-    .auth()
-    .signOut()
-    .then(function() {
-      console.log("user signed out");
-      //Any action to perform if a user signs out
-    });
 });
