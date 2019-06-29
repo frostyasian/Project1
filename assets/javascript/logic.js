@@ -6,7 +6,7 @@ var alert = $("#alert");
 //global arrays
 //store the names of the user tabs in an array. This array is mirrored on the server
 //TODO - include the tab names in the user profile section of the database (as an array)
-var recipeTabs = ["tab 0", "tab 1", "tab 2", "tab 3", "tab 4", "tab 5", "tab 6"];
+var recipeTabs = [];
 
 $("#box-click").on("click", function() {
   var isShowing = parseInt(box.attr("data-showing"));
@@ -76,6 +76,7 @@ $("#tab-okay-icon").on("click", function() {
     .trim();
   $("#custom-tab-input").val("");
   recipeTabs.push(tabname);
+  updateData(userProfileRef, { tabs: recipeTabs });
   layoutCustomTabs();
   $("#tab-plus-icon").trigger("click");
 });
