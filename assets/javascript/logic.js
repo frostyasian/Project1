@@ -128,15 +128,7 @@ $(document).on("click", ".card-tab-option", function() {
   $("#card-tab-select").attr("value", index + "");
 });
 
-$("#card-tab-cancel-icon").on("click", function() {
-  //close the recipe card
-});
-
-$("#save-recipe-button").on("click", function() {
-  //movethe recipe to the recipe-box, index the recipe accordingly, push to server, etc.
-});
-
-function displayRecipe(index, sourceArray) {
+function displayRecipe(index, sourceArray, source, element) {
   var rec = sourceArray[index];
   //grab the modal stored in the storage div and make a copy of it.
   var modal = $("#recipe-display-modal");
@@ -166,6 +158,9 @@ function displayRecipe(index, sourceArray) {
   var ingredients = rec.ingredientLines;
   var list = $("#recipe-modal-ingredients");
   list.empty();
+  if (ingredients.length === 1) {
+    //handle single string of ingredients here
+  }
   ingredients.forEach(ingredient => {
     list.append("<li>" + ingredient + "</li>");
   });
@@ -174,8 +169,19 @@ function displayRecipe(index, sourceArray) {
   link.attr("href", rec.url);
   var host = rec.url.split("/")[2];
   link.text(host + " - " + rec.label);
+  $("#save-recipe-button").attr("data-source", source + "");
+  //index tells me where the div should go in the results pane
+  //the goal here is a google-image-like experience
 
-  modal.detach().appendTo($(".results"));
+  if (!source) {
+    modal.detach().insertAfter(element);
+  } else {
+    modal.detach().prependTo($(".results"));
+  }
+
+  //refresh the recipe-box modal tabs
+  updateRecipeBox();
+  //buggy?
 }
 
 $(document).on("click", ".card,.recipe-card-insert", function() {
@@ -183,12 +189,14 @@ $(document).on("click", ".card,.recipe-card-insert", function() {
   var index = parseInt($(this).attr("data-index"));
   //data-source points to the array where the recipe information is stored
   var source = parseInt($(this).attr("data-source"));
+  var element = $(this);
+  //console.log(source);
   switch (source) {
     case 0:
-      displayRecipe(index, searchResults);
+      displayRecipe(index, searchResults, source, element);
       break;
     case 1:
-      displayRecipe(index, storedRecipeCache);
+      displayRecipe(index, storedRecipeCache, source, element);
       break;
     default:
       console.log("defualt at logic.js:194");
@@ -202,14 +210,30 @@ $("#card-tab-cancel-icon").on("click", function() {
 });
 
 $("#save-recipe-button").on("click", function() {
-  var newRecipe = searchResults[parseInt($(this).attr("data-index"))];
+  var source = parseInt($(this).attr("data-source"));
+  var newRecipe;
+  switch (source) {
+    case 0:
+      newRecipe = searchResults[parseInt($(this).attr("data-index"))];
+      break;
+    case 1:
+      newRecipe = storedRecipeCache[parseInt($(this).attr("data-index"))];
+      break;
+    default:
+      console.log("defualt at logic.js:194");
+  }
+
   var label = recipeTabs[parseInt($("#card-tab-select").attr("value"))];
   //save the newRecipe to the local cache and the server using saveRecipe in data.js
   saveRecipe(newRecipe, label);
-
+  $("#content").empty();
   $("#recipe-display-modal")
     .detach()
     .appendTo($("#storage"));
+  var index = recipeTabs.indexOf(newRecipe.tab);
+  $("#tab-label").text(recipeTabs[index]);
+  $("#tab-select").attr("value", index + "");
+  updateRecipeBox();
 });
 
 function updateRecipeBox() {
@@ -264,9 +288,12 @@ function formatTime(time) {
   if (timeInMinutes !== 0) {
     var hours = Math.floor(timeInMinutes / 60);
     var minutes = Math.round(timeInMinutes % 60);
+    if (hours === 0) {
+      return minutes + "minutes";
+    }
     return hours + " hours " + minutes + " minutes";
   }
-  return "no time data exists for this recipe";
+  return "- minutes";
 }
 
 $(document).on("click", "#swap-auth-in,#swap-auth-up", function() {
