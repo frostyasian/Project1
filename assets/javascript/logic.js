@@ -124,3 +124,38 @@ function flowPastLogin(self) {
     .appendTo($("#box"));
   $("#box-click").trigger("click");
 }
+
+// a lot of this function is copied from the above code (consider refactoring)
+function saveRecipeToCurrentTab(searchResultIndex) {
+  var newRecipe;
+  newRecipe = searchResults[searchResultIndex];
+  var label = recipeTabs[parseInt($("#card-tab-select").attr("value"))];
+  saveRecipe(newRecipe, label);
+  // copied from above
+  $("#content").empty();
+  $("#recipe-display-modal")
+    .detach()
+    .appendTo($("#storage"));
+  var index = recipeTabs.indexOf(newRecipe.tab);
+  $("#tab-label").text(recipeTabs[index]);
+  $("#tab-select").attr("value", index + "");
+  updateRecipeBox();
+}
+
+function allowDrop(ev) {
+  ev.preventDefault();
+}
+
+// see also buildCard in search.js
+function drag(ev) { // set what gets passed to target
+//  ev.dataTransfer.setData("text", ev.target.id); // original example code
+  ev.dataTransfer.setData("text", ev.target.getAttribute("data-index"));  // data-index is the index of this card in the search results 
+}
+
+function drop(ev) {  
+  ev.preventDefault();
+  var searchResultIndex = ev.dataTransfer.getData("text");
+  console.log("drop event handler - searchResultIndex: '" + searchResultIndex + "'");
+  saveRecipeToCurrentTab(searchResultIndex);
+}
+
