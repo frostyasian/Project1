@@ -237,9 +237,6 @@ $("#save-recipe-button").on("click", function() {
 });
 
 function updateRecipeBox() {
-  $("#recipe-box")
-    .detach()
-    .appendTo($("#box")); //this is for testing...
   $("#content").empty();
   for (var i = 0; i < storedRecipeCache.length; i++) {
     var r = storedRecipeCache[i];
