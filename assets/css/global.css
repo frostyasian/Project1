@@ -9,7 +9,7 @@ body {
   flex-direction: column;
   margin: 0;
   width: 100%;
-  font-family: "Mali", cursive;
+  font-family: "Noto Sans JP", sans-serif;
 }
 
 .container {
@@ -26,7 +26,7 @@ body {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
-  margin-top: 57px;
+  margin-top: 65px;
 }
 .navbar {
   width: 100%;
@@ -93,13 +93,13 @@ input,
 
 #box {
   position: fixed;
-  top: 61px;
+  top: 65px;
   display: flex;
   flex-direction: column;
   align-items: center;
   right: -10px;
   width: 0;
-  height: calc(100vh - 57px);
+  height: calc(100vh - 65px);
   transition: width, 0.5s;
   background-color: #05386b;
   overflow: hidden;

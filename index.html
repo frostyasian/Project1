@@ -17,7 +17,7 @@
     <!-- Font Awesome -->
     <script src="https://kit.fontawesome.com/1a3c5e6c96.js"></script>
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Mali&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans+JP&display=swap" rel="stylesheet" />
     <!-- local stylesheets -->
     <link rel="stylesheet" href="assets/css/global.css" />
     <link rel="stylesheet" href="assets/css/recipe-box.css" />
@@ -55,17 +55,23 @@
     </div>
     <div id="storage">
       
-      <!-- recipe details modal -->
+      <!-- recipe display modal -->
       <div id="recipe-display-modal" >
+        <div class="modal-gap"></div>
         <img id="recipe-modal-image" class="recipe-card-big" src="" alt="recipe image" />
         <div class="right">
           <div class="top-bar">
-              <div  id="card-tab-select" data-state="0" value="0">
-                <span id="card-tab-label">save to...</span>
-                
+              <div id="fix">
+                  <div  id="card-tab-select" data-state="0" value="0">
+                      <span id="card-tab-label">save to...</span>
+                      
+                    </div>
               </div>
-              <button id="save-recipe-button">save</button>
-              <i id="card-tab-cancel-icon" class="far fa-window-close"></i>
+              <div id="recipe-display-button-group">
+                <button id="save-recipe-button">save</button>
+                <i id="card-tab-cancel-icon" class="far fa-window-close"></i>
+              </div>
+              
           </div>
           <h3 id="recipe-modal-title">Some Recipe Title</h3>
           <h4><i class="fas fa-stopwatch pad-right"></i> <span id="recipe-modal-time">7 hours 30 minutes</span></h3>
@@ -81,6 +87,7 @@
           </div>
           <a id ="recipe-modal-link" href="#" target="_blank">food52.com - citrus-roasted-chicken</a>
         </div>
+        <div class="modal-gap"></div>
       </div>
       <!-- The Sign-up Modal -->
       <div id="auth-modal-up">

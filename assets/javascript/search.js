@@ -30,6 +30,10 @@ function displayResults() {
   for (var i = 0; i < searchResults.length; i++) {
     var recipe = searchResults[i];
     var title = recipe.label;
+    if (title.length > 20) {
+      var truncatedTitle = title.substring(0, 18) + "...";
+      title = truncatedTitle;
+    }
     var imageUrl = recipe.image;
     var time = recipe.totalTime; //DEBUG - not all recipes have total time
     var index = i.toString();
