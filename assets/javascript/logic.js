@@ -8,126 +8,13 @@ var alert = $("#alert");
 //TODO - include the tab names in the user profile section of the database (as an array)
 var recipeTabs = [];
 
-$("#box-click").on("click", function() {
-  var isShowing = parseInt(box.attr("data-showing"));
-  if (isShowing) {
-    box.css("width", "0px").attr("data-showing", "0");
-    $("#box-gap").css("width", "0px");
-  } else {
-    box.css("width", "405px").attr("data-showing", "1");
-    $("#box-gap").css("width", "405px");
-  }
-});
-
-$("#tab-all").on("click", function() {
-  toggleActiveTab($(this));
-});
-
-$("#tab-select").on("click", function() {
-  var isShowing = parseInt($(this).attr("data-state"));
-  var max = $(window).height() - 93;
-  var height =
-    36 *
-    $(this)
-      .children()
-      .toArray().length;
-  if (isShowing) {
-    $(this)
-      .css("height", "36px")
-      .attr("data-state", "0");
-    toggleActiveTab($(this));
-  } else {
-    if ($(this).hasClass("active-tab")) {
-      $(this).removeClass("active-tab");
-    }
-    if (height < max) {
-      $(this)
-        .css("height", height + "px")
-        .attr("data-state", "1");
-    } else {
-      $(this)
-        .css("height", max + "px")
-        .attr("data-state", "1");
-    }
-  }
-});
-
-$(document).on("click", ".tab-option", function() {
-  var index = parseInt($(this).attr("value"));
-  $("#tab-label").text(recipeTabs[index]);
-  $("#tab-select").attr("value", index + "");
-  updateRecipeBox();
-});
-
-$("#tab-plus-icon").on("click", function() {
-  var dialogue = $("#custom-tab-dialogue");
-  var isShowing = parseInt(dialogue.attr("data-state"));
-  if (isShowing) {
-    dialogue.css("display", "none").attr("data-state", "0");
-  } else {
-    dialogue.css("display", "flex").attr("data-state", "1");
-  }
-});
-
-$("#tab-okay-icon").on("click", function() {
-  //we'll add a new tab string to the recipeTabs array, then build a new tab and append it to the div
-  var tabname = $("#custom-tab-input")
-    .val()
-    .trim();
-  $("#custom-tab-input").val("");
-  recipeTabs.push(tabname);
-  updateData(userProfileRef, { tabs: recipeTabs });
-  layoutCustomTabs();
-  $("#tab-plus-icon").trigger("click");
-});
-
-function layoutCustomTabs() {
-  var label = $("#tab-label");
-  label.detach();
-  var tabDiv = $("#tab-select");
-  tabDiv.empty();
-  recipeTabs.sort();
-  recipeTabs.forEach(function(value, index) {
-    var tab = $("<div>")
-      .addClass("tab-option")
-      .attr("value", index + "")
-      .text(value);
-    tabDiv.append(tab);
-  });
-  tabDiv.prepend(label);
-}
-
-$("#tab-cancel-icon").on("click", function() {
-  //we'll add a new tab string to the recipeTabs array, then build a new tab and append it to the div
-  $("#custom-tab-input").val("");
-  $("#tab-plus-icon").trigger("click");
-});
-
+//A function that handles css class designation for the active tab in the recipe box
 function toggleActiveTab(tab) {
   $("#tab-all").removeClass("active-tab");
   $("#tab-select").removeClass("active-tab");
 
   tab.addClass("active-tab");
 }
-
-$("#card-tab-select").on("click", function() {
-  var isShowing = parseInt($(this).attr("data-state"));
-  if (isShowing) {
-    $(this)
-      .css("height", "24px")
-      .attr("data-state", "0");
-  } else {
-    $(this)
-      .css("height", "auto")
-      .attr("data-state", "1");
-  }
-});
-
-$(document).on("click", ".card-tab-option", function() {
-  var index = parseInt($(this).attr("value"));
-  $("#card-tab-label").text(recipeTabs[index]);
-  $("#card-tab-select").attr("value", index + "");
-});
 
 function displayRecipe(index, sourceArray, source, element) {
   var rec = sourceArray[index];
@@ -185,58 +72,6 @@ function displayRecipe(index, sourceArray, source, element) {
   //buggy?
 }
 
-$(document).on("click", ".card,.recipe-card-insert", function() {
-  //get the index of the recipe and pull the data object from searchResults array
-  var index = parseInt($(this).attr("data-index"));
-  //data-source points to the array where the recipe information is stored
-  var source = parseInt($(this).attr("data-source"));
-  var element = $(this);
-  //console.log(source);
-  switch (source) {
-    case 0:
-      displayRecipe(index, searchResults, source, element);
-      break;
-    case 1:
-      displayRecipe(index, storedRecipeCache, source, element);
-      break;
-    default:
-      console.log("defualt at logic.js:194");
-  }
-});
-
-$("#card-tab-cancel-icon").on("click", function() {
-  $("#recipe-display-modal")
-    .detach()
-    .appendTo($("#storage"));
-});
-
-$("#save-recipe-button").on("click", function() {
-  var source = parseInt($(this).attr("data-source"));
-  var newRecipe;
-  switch (source) {
-    case 0:
-      newRecipe = searchResults[parseInt($(this).attr("data-index"))];
-      break;
-    case 1:
-      newRecipe = storedRecipeCache[parseInt($(this).attr("data-index"))];
-      break;
-    default:
-      console.log("defualt at logic.js:194");
-  }
-
-  var label = recipeTabs[parseInt($("#card-tab-select").attr("value"))];
-  //save the newRecipe to the local cache and the server using saveRecipe in data.js
-  saveRecipe(newRecipe, label);
-  $("#content").empty();
-  $("#recipe-display-modal")
-    .detach()
-    .appendTo($("#storage"));
-  var index = recipeTabs.indexOf(newRecipe.tab);
-  $("#tab-label").text(recipeTabs[index]);
-  $("#tab-select").attr("value", index + "");
-  updateRecipeBox();
-});
-
 function updateRecipeBox() {
   $("#content").empty();
   for (var i = 0; i < storedRecipeCache.length; i++) {
@@ -280,38 +115,12 @@ function formatTime(time) {
   return "- minutes";
 }
 
-$(document).on("click", "#swap-auth-in,#swap-auth-up", function() {
-  var inModal = $("#auth-modal-in");
-  var upModal = $("#auth-modal-up");
-  var storage = $("#storage");
-  var box = $("#box");
-  var swapTo = $(this)
-    .attr("id")
-    .split("-")
-    .pop();
-  if (swapTo === "up") {
-    inModal.detach().appendTo(storage);
-    upModal.detach().appendTo(box);
-  } else {
-    inModal.detach().appendTo(box);
-    upModal.detach().appendTo(storage);
-  }
-});
-
-$(document).on("keyup", function(event) {
-  if (event.keyCode !== 13) return; //only perform the following code block if the enter key is pressed
-  //get the object that has focus and determine what action needs to be taken
-  var activeElement = $(document.activeElement);
-  var targetId = activeElement.attr("id");
-  console.log(targetId);
-
-  if (targetId === "recipe-search") {
-    $("#search-icon").trigger("click");
-  } else if (targetId === "sign-in-email") {
-    $("#sign-in-password").focus();
-  } else if (targetId === "sign-in-password") {
-    $("#sign-in").trigger("click");
-  } else if (targetId === "custom-tab-input") {
-    $("#tab-okay-icon").trigger("click");
-  }
-});
+//a function that loads the recipe box for a user / guest and closes the box modal after login
+function flowPastLogin(self) {
+  console.log(self);
+  self.detach().appendTo($("#storage"));
+  $("#recipe-box")
+    .detach()
+    .appendTo($("#box"));
+  $("#box-click").trigger("click");
+}
