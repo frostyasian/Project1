@@ -236,6 +236,23 @@ $("#save-recipe-button").on("click", function() {
   updateRecipeBox();
 });
 
+// a lot of this function is copied from the above code (consider refactoring)
+function saveRecipeToCurrentTab(searchResultIndex) {
+  var newRecipe;
+  newRecipe = searchResults[searchResultIndex];
+  var label = recipeTabs[parseInt($("#card-tab-select").attr("value"))];
+  saveRecipe(newRecipe, label);
+  // copied from above
+  $("#content").empty();
+  $("#recipe-display-modal")
+    .detach()
+    .appendTo($("#storage"));
+  var index = recipeTabs.indexOf(newRecipe.tab);
+  $("#tab-label").text(recipeTabs[index]);
+  $("#tab-select").attr("value", index + "");
+  updateRecipeBox();
+}
+
 function updateRecipeBox() {
   $("#recipe-box")
     .detach()
@@ -263,20 +280,6 @@ function updateRecipeBox() {
       insert.append(image, div).appendTo($("#content"));
     }
   }
-}
-
-function allowDrop(ev) {
-  ev.preventDefault();
-}
-
-function drag(ev) {
-  ev.dataTransfer.setData("text", ev.target.id);
-}
-
-function drop(ev) {
-  ev.preventDefault();
-  var data = ev.dataTransfer.getData("text");
-  ev.target.appendChild(document.getElementById(data));
 }
 
 //a function that takes in a time string from the recipe object and retuns a formatted time string for display
@@ -331,3 +334,20 @@ $(document).on("keyup", function(event) {
     $("#tab-okay-icon").trigger("click");
   }
 });
+
+function allowDrop(ev) {
+  ev.preventDefault();
+}
+
+// see also buildCard in search.js
+function drag(ev) { // set what gets passed to target
+//  ev.dataTransfer.setData("text", ev.target.id); // original example code
+  ev.dataTransfer.setData("text", ev.target.getAttribute("data-index"));  // data-index is the index of this card in the search results 
+}
+
+function drop(ev) {  
+  ev.preventDefault();
+  var searchResultIndex = ev.dataTransfer.getData("text");
+  console.log("drop event handler - searchResultIndex: '" + searchResultIndex + "'");
+  saveRecipeToCurrentTab(searchResultIndex);
+}
