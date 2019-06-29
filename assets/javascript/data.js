@@ -129,3 +129,24 @@ function deleteRecipe(key) {
       console.log("ERROR -" + err.code + ": " + err.message);
     });
 }
+
+//a method to load the local cache of recipes
+//this method should only be called once, when a user logs in, from auth.js method : onAuthStateChanged
+function fetchRecipeTabs() {
+  userProfileRef
+    .once("value", function(snapshot) {
+      //store the snapshot value in a variable. The value is formatted as a JSON object
+
+      var obj = snapshot.val();
+      //if the user has nothing stored in their database, obj will be null
+      if (obj === null) {
+        return;
+      }
+
+      recipeTabs = obj.tabs;
+      layoutCustomTabs();
+    })
+    .catch(function(err) {
+      console.log("ERROR -" + err.code + ": " + err.message);
+    });
+}

@@ -95,7 +95,9 @@ function createNewUser(email, password, userName) {
       //set up a database directory for the user's profile
       userProfileRef = database.ref("/users/" + currentUser.uid + "/profile");
       //set up a database directory for the user's recipe box
-      userRecipeBoxRef = database.ref("/users/" + currentUser.uid + "/recipe_box");
+      userRecipeBoxRef = database.ref(
+        "/users/" + currentUser.uid + "/recipe_box"
+      );
       //Great! our new user now has a custom name, a profile, and a place to store recipes
       //At this point we haven't written anything to the databse. We've just set up database references
 
@@ -118,7 +120,9 @@ function login(email, password) {
       //link to the database directory for the user's profile
       userProfileRef = database.ref("/users/" + currentUser.uid + "/profile");
       //link to the database directory for the user's recipe box
-      userRecipeBoxRef = database.ref("/users/" + currentUser.uid + "/recipe_box");
+      userRecipeBoxRef = database.ref(
+        "/users/" + currentUser.uid + "/recipe_box"
+      );
       //TODO - load the user's recipe box and profile information, if any
       $("#box-click").text(currentUser.displayName);
       flowPastLogin($("#auth-modal-in"));
@@ -192,7 +196,9 @@ function guestSignIn() {
       //set up a database directory for the guest's profile
       userProfileRef = database.ref("/users/" + currentUser.uid + "/profile");
       //set up a database directory for the guest's recipe box
-      userRecipeBoxRef = database.ref("/users/" + currentUser.uid + "/recipe_box");
+      userRecipeBoxRef = database.ref(
+        "/users/" + currentUser.uid + "/recipe_box"
+      );
       //Great! our new guest now has a custom name, a profile, and a place to store recipes
     })
     .catch(function(err) {
@@ -249,8 +255,11 @@ firebase.auth().onAuthStateChanged(function(user) {
     //a redundancy in the code that ensures that the database references are made for users who refresh the page or chose to stay logged in
     userDatabaseRef = database.ref("/users/" + currentUser.uid);
     userProfileRef = database.ref("/users/" + currentUser.uid + "/profile");
-    userRecipeBoxRef = database.ref("/users/" + currentUser.uid + "/recipe_box");
+    userRecipeBoxRef = database.ref(
+      "/users/" + currentUser.uid + "/recipe_box"
+    );
     fetchRecipes();
+    fetchRecipeTabs();
     //update the UI with user profile data
     $("#box-click").text(currentUser.displayName);
     $("#user-data").append("<span id='logout'>sign out</span>");
