@@ -11,3 +11,4 @@ assets/javascript/firebase-config.js
 /.vs/VSWorkspaceState.json
 *.suo
 /.vs/recipebox/config/applicationhost.config
+*.sqlite-journal
