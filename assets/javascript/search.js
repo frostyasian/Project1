@@ -44,7 +44,9 @@ function buildCard(title, imgUrl, time, index) {
   var card = $("<div>")
     .addClass("card")
     .attr("data-index", index + "")
-    .attr("data-source", "0");
+    .attr("data-source", "0")
+    .attr("draggable", "true")
+    .attr("ondragstart", "drag(event)");
   var cardtitle = $("<div>")
     .addClass("card-title")
     .text(title);

@@ -241,6 +241,20 @@ function updateRecipeBox() {
   }
 }
 
+function allowDrop(ev) {
+  ev.preventDefault();
+}
+
+function drag(ev) {
+  ev.dataTransfer.setData("text", ev.target.id);
+}
+
+function drop(ev) {
+  ev.preventDefault();
+  var data = ev.dataTransfer.getData("text");
+  ev.target.appendChild(document.getElementById(data));
+}
+
 //a function that takes in a time string from the recipe object and retuns a formatted time string for display
 //the formatted time string is <hours> 'hours' + <minutes> 'minutes'
 function formatTime(time) {
