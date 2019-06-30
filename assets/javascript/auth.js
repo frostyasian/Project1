@@ -303,9 +303,6 @@ firebase.auth().onAuthStateChanged(function(user) {
     //best practices dictate that the instance of the user is reset to prevent any other functions from accessing
     //data or methods attached to the user that left.
     currentUser = undefined;
-    storedRecipeCache = [];
-    storedRecipeKeys = [];
-    searchResults = [];
     $("#logout").remove();
     $("#box-click").text("Welcome");
     //there are other things to add to this list.
