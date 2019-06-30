@@ -108,6 +108,9 @@ $(document).on("click", "#logout", function() {
     .signOut()
     .then(function() {
       updateData(userProfileRef, { isActive: false });
+      //clear the results div - this is a fix to the click events being stripped off of recipes that are still displayed after logout
+      $(".results").empty();
+      //TODO - we can add the animation that Zuoyi built back in, maybe?
       console.log("user signed out");
       //Any action to perform if a user signs out
     });
