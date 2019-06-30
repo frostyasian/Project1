@@ -3,106 +3,7 @@ var box = $("#box"); //add items with .append();
 var storage = $("#storage"); //store hidden items here - modals and dialouges
 var alert = $("#alert");
 
-//global arrays
-//store the names of the user tabs in an array. This array is mirrored on the server
-//TODO - include the tab names in the user profile section of the database (as an array)
-var recipeTabs = [];
-
-$("#box-click").on("click", function() {
-  var isShowing = parseInt(box.attr("data-showing"));
-  if (isShowing) {
-    box.css("width", "0px").attr("data-showing", "0");
-    $("#box-gap").css("width", "0px");
-  } else {
-    box.css("width", "405px").attr("data-showing", "1");
-    $("#box-gap").css("width", "405px");
-  }
-});
-
-$("#tab-all").on("click", function() {
-  toggleActiveTab($(this));
-});
-
-$("#tab-select").on("click", function() {
-  var isShowing = parseInt($(this).attr("data-state"));
-  var max = $(window).height() - 93;
-  var height =
-    36 *
-    $(this)
-      .children()
-      .toArray().length;
-  if (isShowing) {
-    $(this)
-      .css("height", "36px")
-      .attr("data-state", "0");
-    toggleActiveTab($(this));
-  } else {
-    if ($(this).hasClass("active-tab")) {
-      $(this).removeClass("active-tab");
-    }
-    if (height < max) {
-      $(this)
-        .css("height", height + "px")
-        .attr("data-state", "1");
-    } else {
-      $(this)
-        .css("height", max + "px")
-        .attr("data-state", "1");
-    }
-  }
-});
-
-$(document).on("click", ".tab-option", function() {
-  var index = parseInt($(this).attr("value"));
-  $("#tab-label").text(recipeTabs[index]);
-  $("#tab-select").attr("value", index + "");
-  updateRecipeBox();
-});
-
-$("#tab-plus-icon").on("click", function() {
-  var dialogue = $("#custom-tab-dialogue");
-  var isShowing = parseInt(dialogue.attr("data-state"));
-  if (isShowing) {
-    dialogue.css("display", "none").attr("data-state", "0");
-  } else {
-    dialogue.css("display", "flex").attr("data-state", "1");
-  }
-});
-
-$("#tab-okay-icon").on("click", function() {
-  //we'll add a new tab string to the recipeTabs array, then build a new tab and append it to the div
-  var tabname = $("#custom-tab-input")
-    .val()
-    .trim();
-  $("#custom-tab-input").val("");
-  recipeTabs.push(tabname);
-  updateData(userProfileRef, { tabs: recipeTabs });
-  layoutCustomTabs();
-  $("#tab-plus-icon").trigger("click");
-});
-
-function layoutCustomTabs() {
-  var label = $("#tab-label");
-  label.detach();
-  var tabDiv = $("#tab-select");
-  tabDiv.empty();
-  recipeTabs.sort();
-  recipeTabs.forEach(function(value, index) {
-    var tab = $("<div>")
-      .addClass("tab-option")
-      .attr("value", index + "")
-      .text(value);
-    tabDiv.append(tab);
-  });
-  tabDiv.prepend(label);
-}
-
-$("#tab-cancel-icon").on("click", function() {
-  //we'll add a new tab string to the recipeTabs array, then build a new tab and append it to the div
-  $("#custom-tab-input").val("");
-  $("#tab-plus-icon").trigger("click");
-});
-
+//A function that handles css class designation for the active tab in the recipe box
 function toggleActiveTab(tab) {
   $("#tab-all").removeClass("active-tab");
   $("#tab-select").removeClass("active-tab");
@@ -110,53 +11,25 @@ function toggleActiveTab(tab) {
   tab.addClass("active-tab");
 }
 
-$("#card-tab-select").on("click", function() {
-  var isShowing = parseInt($(this).attr("data-state"));
-  if (isShowing) {
-    $(this)
-      .css("height", "24px")
-      .attr("data-state", "0");
-  } else {
-    $(this)
-      .css("height", "auto")
-      .attr("data-state", "1");
-  }
-});
-
-$(document).on("click", ".card-tab-option", function() {
-  var index = parseInt($(this).attr("value"));
-  $("#card-tab-label").text(recipeTabs[index]);
-  $("#card-tab-select").attr("value", index + "");
-});
-
-function displayRecipe(index, sourceArray, source, element) {
-  var rec = sourceArray[index];
-  //grab the modal stored in the storage div and make a copy of it.
+function displayRecipe(recipe, element, isSaved) {
+  //grab the modal stored in the storage div
   var modal = $("#recipe-display-modal");
-  $("#save-recipe-button").attr("data-index", index.toString());
-  //populate the recipe-specific data to the modal
-  $("#recipe-modal-image").attr("src", rec.image);
-  //populate the user tabs from the recipe-tabs array
-  var dropdownLabel = $("#card-tab-label");
-  dropdownLabel.detach();
-  $("#card-tab-select").empty();
-  for (var i = 0; i < recipeTabs.length; i++) {
-    var option = $("<div>")
-      .addClass("card-tab-option")
-      .attr("value", i.toString())
-      .text(recipeTabs[i]);
-    $("#card-tab-select").append(option);
+  $("#save-recipe-button").attr("data-index", element.attr("data-index"));
+  if (isSaved) {
+    $("#save-recipe-button").attr("data-key", element.attr("data-key"));
   }
-  dropdownLabel.prependTo($("#card-tab-select"));
+  //populate the recipe-specific data to the modal
+  $("#recipe-modal-image").attr("src", recipe.image);
+
   //label the dropdown with help text
   $("#card-tab-label").text("save recipe to...");
   //update the recipe title
-  $("#recipe-modal-title").text(rec.label);
+  $("#recipe-modal-title").text(recipe.label);
   //update the recipe time
 
-  $("#recipe-modal-time").text(formatTime(rec.totalTime));
+  $("#recipe-modal-time").text(formatTime(recipe.totalTime));
   //update the recipe ingredients
-  var ingredients = rec.ingredientLines;
+  var ingredients = recipe.ingredientLines;
   var list = $("#recipe-modal-ingredients");
   list.empty();
   if (ingredients.length === 1) {
@@ -167,9 +40,10 @@ function displayRecipe(index, sourceArray, source, element) {
   });
   //update the recipe external link
   var link = $("#recipe-modal-link");
-  link.attr("href", rec.url);
-  var host = rec.url.split("/")[2];
-  link.text(host + " - " + rec.label);
+  link.attr("href", recipe.url);
+  var host = recipe.url.split(".")[1];
+  link.text(host + " - " + recipe.label);
+  var source = element.attr("data-source");
   $("#save-recipe-button").attr("data-source", source + "");
   //index tells me where the div should go in the results pane
   //the goal here is a google-image-like experience
@@ -179,88 +53,29 @@ function displayRecipe(index, sourceArray, source, element) {
   } else {
     modal.detach().prependTo($(".results"));
   }
-
-  //refresh the recipe-box modal tabs
-  updateRecipeBox();
-  //buggy?
 }
 
-$(document).on("click", ".card,.recipe-card-insert", function() {
-  //get the index of the recipe and pull the data object from searchResults array
-  var index = parseInt($(this).attr("data-index"));
-  //data-source points to the array where the recipe information is stored
-  var source = parseInt($(this).attr("data-source"));
-  var element = $(this);
-  //console.log(source);
-  switch (source) {
-    case 0:
-      displayRecipe(index, searchResults, source, element);
-      break;
-    case 1:
-      displayRecipe(index, storedRecipeCache, source, element);
-      break;
-    default:
-      console.log("defualt at logic.js:194");
-  }
-});
-
-$("#card-tab-cancel-icon").on("click", function() {
-  $("#recipe-display-modal")
-    .detach()
-    .appendTo($("#storage"));
-});
-
-$("#save-recipe-button").on("click", function() {
-  var source = parseInt($(this).attr("data-source"));
-  var newRecipe;
-  switch (source) {
-    case 0:
-      newRecipe = searchResults[parseInt($(this).attr("data-index"))];
-      break;
-    case 1:
-      newRecipe = storedRecipeCache[parseInt($(this).attr("data-index"))];
-      break;
-    default:
-      console.log("defualt at logic.js:194");
-  }
-
-  var label = recipeTabs[parseInt($("#card-tab-select").attr("value"))];
-  //save the newRecipe to the local cache and the server using saveRecipe in data.js
-  saveRecipe(newRecipe, label);
+//this function takes in a collection of recipes as a JSON object as well as an array of keys for each of the
+//recipes stored in the object.
+function updateRecipeBox(recipeObject, keys) {
   $("#content").empty();
-  $("#recipe-display-modal")
-    .detach()
-    .appendTo($("#storage"));
-  var index = recipeTabs.indexOf(newRecipe.tab);
-  $("#tab-label").text(recipeTabs[index]);
-  $("#tab-select").attr("value", index + "");
-  updateRecipeBox();
-});
-
-function updateRecipeBox() {
-  $("#content").empty();
-  for (var i = 0; i < storedRecipeCache.length; i++) {
-    var r = storedRecipeCache[i];
-    //console.log(storedRecipeCache);
-    var currentTab = $("#tab-label").text();
-    if (currentTab == r.tab) {
-      var insert = $("<div>")
-        .addClass("recipe-card-insert")
-        .attr("data-index", i.toString())
-        .attr("data-source", "1");
-      var imgURL = r.image;
-      var image = $("<img>")
-        .attr("src", imgURL)
-        .addClass("recipe-image-tiny");
-      var title = r.label;
-
-      var timestring = formatTime(r.totalTime);
-      var div = $("<div>")
-        .addClass("recipe-insert-info")
-        .append("<div>" + title + "</div>", "<div>" + timestring + "</div>");
-      insert.append(image, div).appendTo($("#content"));
-    }
-  }
+  keys.forEach(function(key, index) {
+    var label = recipeObject[key].label;
+    var imgURL = recipeObject[key].image;
+    var time = recipeObject[key].totalTime;
+    var insert = $("<div>")
+      .addClass("recipe-card-insert")
+      .attr("data-key", key)
+      .attr("data-source", "1");
+    var image = $("<img>")
+      .attr("src", imgURL)
+      .addClass("recipe-image-tiny");
+    var timestring = formatTime(time);
+    var div = $("<div>")
+      .addClass("recipe-insert-info")
+      .append("<div>" + label + "</div>", "<div>" + timestring + "</div>");
+    insert.append(image, div).appendTo($("#content"));
+  });
 }
 
 //a function that takes in a time string from the recipe object and retuns a formatted time string for display
@@ -280,38 +95,65 @@ function formatTime(time) {
   return "- minutes";
 }
 
-$(document).on("click", "#swap-auth-in,#swap-auth-up", function() {
-  var inModal = $("#auth-modal-in");
-  var upModal = $("#auth-modal-up");
-  var storage = $("#storage");
-  var box = $("#box");
-  var swapTo = $(this)
-    .attr("id")
-    .split("-")
-    .pop();
-  if (swapTo === "up") {
-    inModal.detach().appendTo(storage);
-    upModal.detach().appendTo(box);
-  } else {
-    inModal.detach().appendTo(box);
-    upModal.detach().appendTo(storage);
-  }
-});
+//a function that loads the recipe box for a user / guest and closes the box modal after login
+function flowPastLogin(self) {
+  console.log(self);
+  self.detach().appendTo($("#storage"));
+  $("#recipe-box")
+    .detach()
+    .appendTo($("#box"));
+  $("#box-click").trigger("click");
+}
 
-$(document).on("keyup", function(event) {
-  if (event.keyCode !== 13) return; //only perform the following code block if the enter key is pressed
-  //get the object that has focus and determine what action needs to be taken
-  var activeElement = $(document.activeElement);
-  var targetId = activeElement.attr("id");
-  console.log(targetId);
+function layoutTabs(tabs, index = 0) {
+  var boxTabDiv = $("#tab-select");
+  var boxTabLabel = $("#tab-label");
+  var cardTabDiv = $("#card-tab-select");
+  var cardTabLabel = $("#card-tab-label");
+  boxTabLabel.detach().text(tabs[index]);
+  cardTabLabel.detach().text(tabs[index]);
+  boxTabDiv.empty();
+  cardTabDiv.empty();
+  tabs.forEach(function(tab, dex) {
+    var boxtab = $("<div>")
+      .text(tab)
+      .addClass("tab-option")
+      .attr("value", dex + "");
+    boxTabDiv.append(boxtab);
+    var cardtab = $("<div>")
+      .text(tab)
+      .addClass("card-tab-option")
+      .attr("value", dex + "");
+    cardTabDiv.append(cardtab);
+  });
+  boxTabLabel.prependTo(boxTabDiv);
+  cardTabLabel.prependTo(cardTabDiv);
+}
 
-  if (targetId === "recipe-search") {
-    $("#search-icon").trigger("click");
-  } else if (targetId === "sign-in-email") {
-    $("#sign-in-password").focus();
-  } else if (targetId === "sign-in-password") {
-    $("#sign-in").trigger("click");
-  } else if (targetId === "custom-tab-input") {
-    $("#tab-okay-icon").trigger("click");
+function loadRecipes(tabname) {
+  userRecipeBoxRef.child(tabname).once("value", function(snapshot) {
+    var recipeObject = snapshot.val();
+    if (recipeObject === null) {
+      $("#content").text("You don't have any recipes saved here. Try searching and adding some");
+      console.log("no recipes to display");
+      return;
+    }
+    var keys = Object.keys(recipeObject);
+    updateRecipeBox(recipeObject, keys);
+  });
+}
+
+//a function that looks for a specific, known key format issue in the totalNutrients object of a recipe
+//viz, SUGAR.added
+function scrubKeys(object) {
+  var nutrientKeys = Object.keys(object.totalNutrients);
+  if (nutrientKeys.includes("SUGAR.added")) {
+    try {
+      object.totalNutrients["SUGAR_added"] = object.totalNutrients["SUGAR.added"];
+      delete object.totalNutrients["SUGAR.added"];
+    } catch (error) {
+      console.log(error.message);
+    }
   }
-});
+  return object;
+}

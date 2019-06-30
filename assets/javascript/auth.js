@@ -94,15 +94,28 @@ function createNewUser(email, password, userName) {
       userDatabaseRef = database.ref("/users/" + currentUser.uid);
       //set up a database directory for the user's profile
       userProfileRef = database.ref("/users/" + currentUser.uid + "/profile");
+      //construct an object which will be stored in the database in the user profile section
+      //any changes to the user profile must be to one or more of the keys below.
+      var profileObject = {
+        isAnonymous: false, //state explicitly if the user is anonymous
+        isActive: true, //true if the user is currently logged in
+        userName: userName, //store the user's name in their profile data
+        lastLogin: new Date().getTime(), //grab the current time as a date object and format it in milliseconds
+        searches: 0, //track the site usage by the user by counting the number of searches they do
+        storedRecipes: 0, //track the number of recipes they have ever stored
+        deletedRecipes: 0, //track the number of stored recipes that they have ever deleted
+        //the two preceding keys are menat to track usage of the site. To get an accurate count of stored recipes
+        //query the tab section of the user database and count children.
+        tabs: ["default tab"]
+      };
       //set up a database directory for the user's recipe box
-      userRecipeBoxRef = database.ref(
-        "/users/" + currentUser.uid + "/recipe_box"
-      );
+      userRecipeBoxRef = database.ref("/users/" + currentUser.uid + "/tabs");
+
       //Great! our new user now has a custom name, a profile, and a place to store recipes
       //At this point we haven't written anything to the databse. We've just set up database references
 
       //set up the user's profile directory
-      setProfileData(userProfileRef);
+      setProfileData(profileObject);
     });
 }
 
@@ -120,10 +133,11 @@ function login(email, password) {
       //link to the database directory for the user's profile
       userProfileRef = database.ref("/users/" + currentUser.uid + "/profile");
       //link to the database directory for the user's recipe box
-      userRecipeBoxRef = database.ref(
-        "/users/" + currentUser.uid + "/recipe_box"
-      );
-      //TODO - load the user's recipe box and profile information, if any
+      userRecipeBoxRef = database.ref("/users/" + currentUser.uid + "/recipe_box");
+      updateData(userProfileRef, {
+        isActive: true,
+        lastLogin: new Date().getTime()
+      });
       $("#box-click").text(currentUser.displayName);
       flowPastLogin($("#auth-modal-in"));
     })
@@ -185,7 +199,7 @@ function guestSignIn() {
           displayName: "guest"
         })
         .then(function() {
-          //any actions that needs to happed after the display name is updated goes here
+          //any actions that needs to happen after the display name is updated goes here
           $("#box-click").text(currentUser.displayName);
         })
         .catch(function(err) {
@@ -195,10 +209,22 @@ function guestSignIn() {
       userDatabaseRef = database.ref("/users/" + currentUser.uid);
       //set up a database directory for the guest's profile
       userProfileRef = database.ref("/users/" + currentUser.uid + "/profile");
+      var profileObject = {
+        isAnonymous: true, //state explicitly if the user is anonymous
+        isActive: true, //true if the user is currently logged in
+        userName: "guest", //store the user's name in their profile data
+        lastLogin: new Date().getTime(), //grab the current time as a date object and format it in milliseconds
+        searches: 0, //track the site usage by the user by counting the number of searches they do
+        storedRecipes: 0, //track the number of recipes they have ever stored
+        deletedRecipes: 0, //track the number of stored recipes that they have ever deleted
+        //the two preceding keys are menat to track usage of the site. To get an accurate count of stored recipes
+        //query the tab section of the user database and count children.
+        tabs: ["default tab"]
+      };
       //set up a database directory for the guest's recipe box
-      userRecipeBoxRef = database.ref(
-        "/users/" + currentUser.uid + "/recipe_box"
-      );
+      userRecipeBoxRef = database.ref("/users/" + currentUser.uid + "/tabs");
+      //set up the guest's profile directory
+      setProfileData(profileObject);
       //Great! our new guest now has a custom name, a profile, and a place to store recipes
     })
     .catch(function(err) {
@@ -208,6 +234,7 @@ function guestSignIn() {
 
 //A function that will link guest user accounts with newly created email and password accounts
 //TODO - there needs to be some logic behind the sign-up form that will catch exisiting anonymous users
+//and determine if they are active - deleting them otherwise;
 function linkGuestToAccount(email, password, userName) {
   //to link accounts, we need to get a credential for the new email and password
   var credential = firebase.auth.EmailAuthProvider.credential(email, password);
@@ -255,10 +282,7 @@ firebase.auth().onAuthStateChanged(function(user) {
     //a redundancy in the code that ensures that the database references are made for users who refresh the page or chose to stay logged in
     userDatabaseRef = database.ref("/users/" + currentUser.uid);
     userProfileRef = database.ref("/users/" + currentUser.uid + "/profile");
-    userRecipeBoxRef = database.ref(
-      "/users/" + currentUser.uid + "/recipe_box"
-    );
-    fetchRecipes();
+    userRecipeBoxRef = database.ref("/users/" + currentUser.uid + "/tabs");
     fetchRecipeTabs();
     //update the UI with user profile data
     $("#box-click").text(currentUser.displayName);
@@ -279,86 +303,8 @@ firebase.auth().onAuthStateChanged(function(user) {
     //best practices dictate that the instance of the user is reset to prevent any other functions from accessing
     //data or methods attached to the user that left.
     currentUser = undefined;
-    storedRecipeCache = [];
-    storedRecipeKeys = [];
-    searchResults = [];
     $("#logout").remove();
     $("#box-click").text("Welcome");
     //there are other things to add to this list.
   }
-});
-
-//The following routines may or may not be needed for the UI - they were developed for testing but can be ported to the main project
-
-//sign up a user - this method should only be reachable for anonymous user present or no user present states.
-//a logged in user should never reach this function.
-$("#sign-up").on("click", function(event) {
-  event.preventDefault();
-
-  var userName = $("#sign-up-name")
-    .val()
-    .trim();
-  if (userName.length === 0) {
-    var alert = $("#auth-alert-up");
-    var uNameField = $("#sign-up-name");
-    alert
-      .text("you must provide a user name")
-      .toggleClass("hidden")
-      .toggleClass("bad");
-    uNameField.toggleClass("error");
-    setTimeout(function() {
-      uNameField.toggleClass("error");
-      alert.toggleClass("hidden").toggleClass("bad");
-    }, 3000);
-    return;
-  }
-  var email = $("#sign-up-email")
-    .val()
-    .trim();
-  var password = $("#sign-up-password")
-    .val()
-    .trim();
-
-  if (currentUser && currentUser.isAnonymous) {
-    linkGuestToAccount(email, password, userName);
-  } else {
-    createNewUser(email, password, userName);
-  }
-});
-
-//sign in a user
-$("#sign-in").on("click", function(event) {
-  event.preventDefault();
-  var email = $("#sign-in-email")
-    .val()
-    .trim();
-  var password = $("#sign-in-password")
-    .val()
-    .trim();
-  login(email, password);
-});
-
-//sign in a user anonymously
-$(document).on("click", "#guest-auth-in,#guest-auth-up", function() {
-  guestSignIn();
-});
-//a function that loads the recipe box for a user / guest and closes the box modal after login
-function flowPastLogin(self) {
-  console.log(self);
-  self.detach().appendTo($("#storage"));
-  $("#recipe-box")
-    .detach()
-    .appendTo($("#box"));
-  $("#box-click").trigger("click");
-}
-//logging out a user
-
-$(document).on("click", "#logout", function() {
-  firebase
-    .auth()
-    .signOut()
-    .then(function() {
-      console.log("user signed out");
-      //Any action to perform if a user signs out
-    });
 });
