@@ -47,6 +47,11 @@ $(document).on("click", ".card-tab-option", function() {
   $("#card-tab-select").attr("value", index + "");
 });
 
+//a listener to handle clicks on a dynamically created div displayed at the end of the search results.
+//the div acts like a button to load more results.
+$(document).on("click", ".load-more", function() {
+  displayResults(false);
+});
 //The following click events are a subset of filtered events on the DOM that deal exclusively with
 //authentication modal layout and submission
 

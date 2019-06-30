@@ -1,12 +1,12 @@
 //global variables for recipes
 //store the names of the user tabs in an array. This array is mirrored on the server
 var recipeTabs = [];
-//an array of saved recipe objects which maps 1 to 1 with the recipes stored on the server
-var storedRecipeCache = [];
-//an indexed array of recipe keys which maps 1 to 1 with the recipe objects
-var storedRecipeKeys = [];
 //an indexed array of search results
 var searchResults = [];
+//var the current working result in the array
+var current = 0;
+//the user-defined range of results to display at a time [5, 10, 25, 50]
+var range = 25;
 //a function called when a new user is created
 function setProfileData(profileObject) {
   var timeInMilis = new Date().getTime(); //this is a time string in miliseconds since Jan 1, 1970
