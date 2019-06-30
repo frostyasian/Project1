@@ -183,15 +183,15 @@ function allowDrop(ev) {
 }
 
 // see also buildCard in search.js
-function drag(ev) { // set what gets passed to target
-//  ev.dataTransfer.setData("text", ev.target.id); // original example code
-  ev.dataTransfer.setData("text", ev.target.getAttribute("data-index"));  // data-index is the index of this card in the search results 
+function drag(ev) {
+  // set what gets passed to target
+  //  ev.dataTransfer.setData("text", ev.target.id); // original example code
+  ev.dataTransfer.setData("text", ev.target.getAttribute("data-index")); // data-index is the index of this card in the search results
 }
 
-function drop(ev) {  
+function drop(ev) {
   ev.preventDefault();
   var searchResultIndex = ev.dataTransfer.getData("text");
   console.log("drop event handler - searchResultIndex: '" + searchResultIndex + "'");
   saveRecipeToCurrentTab(searchResultIndex);
 }
-
