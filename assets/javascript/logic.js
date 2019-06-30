@@ -171,7 +171,6 @@ function saveRecipeToCurrentTab(searchResultIndex) {
   var index = recipeTabs.indexOf(newRecipe.tab);
   $("#tab-label").text(recipeTabs[index]);
   $("#tab-select").attr("value", index + "");
-  updateRecipeBox();
 }
 
 function allowDrop(ev) {
