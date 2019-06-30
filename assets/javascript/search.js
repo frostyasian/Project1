@@ -46,6 +46,12 @@ $("#search-icon").on("click", function() {
 //TODO - remove the method that pushes test data to the array
 function displayResults(clear = true) {
   if (clear) {
+    //if the user has a saved recipe displayed and then performs a search, the recipe display modal
+    //was destroyed so no further recipes could be viewed. Here is a fix.
+    $("#recipe-display-modal")
+      .detach()
+      .appendTo($("#storage"));
+
     $(".results").empty();
     range = 25;
     current = 0;

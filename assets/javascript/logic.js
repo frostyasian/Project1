@@ -12,17 +12,22 @@ function toggleActiveTab(tab) {
 }
 
 function displayRecipe(recipe, element, isSaved) {
+  var cardTabLabel = "save recipe to...";
   //grab the modal stored in the storage div
   var modal = $("#recipe-display-modal");
   $("#save-recipe-button").attr("data-index", element.attr("data-index"));
   if (isSaved) {
+    cardTabLabel = $("#tab-label").text();
     $("#save-recipe-button").attr("data-key", element.attr("data-key"));
+    $("#delete-recipe-button").prop("disabled", false);
+  } else {
+    $("#delete-recipe-button").prop("disabled", true);
   }
   //populate the recipe-specific data to the modal
   $("#recipe-modal-image").attr("src", recipe.image);
 
   //label the dropdown with help text
-  $("#card-tab-label").text("save recipe to...");
+  $("#card-tab-label").text(cardTabLabel);
   //update the recipe title
   $("#recipe-modal-title").text(recipe.label);
   //update the recipe time
@@ -43,7 +48,7 @@ function displayRecipe(recipe, element, isSaved) {
   link.attr("href", recipe.url);
   var host = recipe.url.split(".")[1];
   link.text(host + " - " + recipe.label);
-  var source = element.attr("data-source");
+  var source = parseInt(element.attr("data-source"));
   $("#save-recipe-button").attr("data-source", source + "");
   //index tells me where the div should go in the results pane
   //the goal here is a google-image-like experience

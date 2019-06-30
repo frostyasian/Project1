@@ -62,6 +62,7 @@ function deleteRecipe(tab, key) {
     .remove()
     .then(function() {
       console.log("recipe deleted from " + tab);
+      loadRecipes(tab);
     })
     .catch(function(err) {
       console.log("ERROR -" + err.code + ": " + err.message);
