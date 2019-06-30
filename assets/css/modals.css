@@ -83,7 +83,8 @@ h4 {
   background-color: #05386b;
   color: #edf5e1;
 }
-#save-recipe-button {
+#save-recipe-button,
+#delete-recipe-button {
   border: none;
   font-family: inherit;
   font-size: inherit;

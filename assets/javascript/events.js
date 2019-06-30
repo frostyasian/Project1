@@ -342,3 +342,15 @@ $("#save-recipe-button").on("click", function() {
   $("#tab-label").text(newtab);
   $("#tab-select").attr("value", index + "");
 });
+
+//the delete-recipe-button element lives on the recipe display modal. If a recipe is being displayed
+//from search results, the delete button is disabled. If the recipe is being displayed from the recipe box,
+//the delte button is enabled, CLicking the button removes the recipe from the database.
+$("#delete-recipe-button").on("click", function() {
+  var tab = $("#card-tab-label").text();
+  var key = $("#save-recipe-button").attr("data-key");
+  deleteRecipe(tab, key);
+  $("#recipe-display-modal")
+    .detach()
+    .appendTo($("#storage"));
+});
