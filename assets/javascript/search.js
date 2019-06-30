@@ -1,7 +1,6 @@
 var queryString = "https://api.edamam.com/search?q=";
 var searchTerm = "";
 
-var searchResults = [];
 //the search method performs an ajax get request to the API and returns the results to
 //the searchResults array.
 $("#search-icon").on("click", function() {
