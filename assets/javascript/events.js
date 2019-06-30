@@ -1,5 +1,10 @@
 // This file holds listeners for click and key events only
 
+//window level events are events that happen at the top of the DOM, such as page refresh, forward and back navigation, etc.
+//TODO - add $(window).unload(function(event){
+// //update user profile to be logged out
+// //avoid page refresh
+// });
 //document level events are events triggered on the document
 //the event listeners that follow are organized by document level execution
 //events triggerd and handled by the document come first. Events triggered by the document
@@ -12,7 +17,6 @@ $(document).on("keyup", function(event) {
   //get the object that has focus and determine what action needs to be taken
   var activeElement = $(document.activeElement);
   var targetId = activeElement.attr("id");
-  console.log(targetId);
 
   if (targetId === "recipe-search") {
     $("#search-icon").trigger("click");
@@ -27,10 +31,13 @@ $(document).on("keyup", function(event) {
 
 //A listener to handle clicks on dynamicalyy populated tab dropwdowns for the recipe-box
 $(document).on("click", ".tab-option", function() {
+  console.log("tab click event fired");
   var index = parseInt($(this).attr("value"));
-  $("#tab-label").text(recipeTabs[index]);
+  var tabname = recipeTabs[index];
+  console.log(index + ", " + tabname);
+  $("#tab-label").text(tabname);
   $("#tab-select").attr("value", index + "");
-  updateRecipeBox();
+  loadRecipes(tabname);
 });
 
 //A listener to handle clicks on dynamicalyy populated tab dropwdowns for the recipe-display modal
@@ -40,6 +47,11 @@ $(document).on("click", ".card-tab-option", function() {
   $("#card-tab-select").attr("value", index + "");
 });
 
+//a listener to handle clicks on a dynamically created div displayed at the end of the search results.
+//the div acts like a button to load more results.
+$(document).on("click", ".load-more", function() {
+  displayResults(false);
+});
 //The following click events are a subset of filtered events on the DOM that deal exclusively with
 //authentication modal layout and submission
 
@@ -64,20 +76,29 @@ $(document).on("click", "#swap-auth-in,#swap-auth-up", function() {
 });
 
 //A click listener that filters down to search result cards or stored recipe cards. When either of these
-//elements are clicked, the recipe is displayed in a modal.
+//elements are clicked, the recipe is displayed as a bar in the results div.
 $(document).on("click", ".card,.recipe-card-insert", function() {
-  //get the index of the recipe and pull the data object from searchResults array
-  var index = parseInt($(this).attr("data-index"));
   //data-source points to the array where the recipe information is stored
   var source = parseInt($(this).attr("data-source"));
   var element = $(this);
   //console.log(source);
   switch (source) {
     case 0:
-      displayRecipe(index, searchResults, source, element);
+      displayRecipe(searchResults[parseInt($(this).attr("data-index"))], element, false);
       break;
     case 1:
-      displayRecipe(index, storedRecipeCache, source, element);
+      var key = element.attr("data-key");
+      console.log(key);
+      var tab = $("#tab-label").text();
+      console.log(tab);
+      userRecipeBoxRef
+        .child(tab)
+        .child(key)
+        .once("value", function(snapshot) {
+          var recipe = snapshot.val();
+          displayRecipe(recipe, element, true);
+        });
+
       break;
     default:
       console.log("defualt at logic.js:194");
@@ -91,6 +112,10 @@ $(document).on("click", "#logout", function() {
     .auth()
     .signOut()
     .then(function() {
+      updateData(userProfileRef, { isActive: false });
+      //clear the results div - this is a fix to the click events being stripped off of recipes that are still displayed after logout
+      $(".results").empty();
+      //TODO - we can add the animation that Zuoyi built back in, maybe?
       console.log("user signed out");
       //Any action to perform if a user signs out
     });
@@ -181,14 +206,36 @@ $("#tab-plus-icon").on("click", function() {
 //the tab-okay-icon lives within the cutom tab dialog. When clicked, a custom tab is added
 //to the tab dropdown menus and the custom tab dialogue is closed
 $("#tab-okay-icon").on("click", function() {
-  //we'll add a new tab string to the recipeTabs array, then build a new tab and append it to the div
+  //get the name of the new tab
   var tabname = $("#custom-tab-input")
     .val()
     .trim();
+  //store the tab name in the user profile =>
+  //first pull down the stored tabs from the database
+  userProfileRef
+    .once("value", function(snapshot) {
+      console.log("pulling tabs down from firebase");
+      //assign a reference to the tabs array
+      recipeTabs = snapshot.val().tabs;
+
+      //add the new tab to the array
+      recipeTabs.push(tabname);
+      //then sort the tabs alphabetically
+      recipeTabs.sort();
+      //then update the database
+      updateData(userProfileRef, {
+        tabs: recipeTabs
+      });
+      //update the tabs in the recipe box and snap to the index of the most recent tab
+      var tabIndex = recipeTabs.indexOf(tabname);
+      layoutTabs(recipeTabs, tabIndex);
+      loadRecipes(tabname);
+    })
+    .catch(function(err) {
+      console.log("ERROR -" + err.code + ": " + err.message);
+    });
   $("#custom-tab-input").val("");
-  recipeTabs.push(tabname);
-  updateData(userProfileRef, { tabs: recipeTabs });
-  layoutCustomTabs();
+  //layoutCustomTabs();
   $("#tab-plus-icon").trigger("click");
 });
 
@@ -257,31 +304,41 @@ $("#card-tab-cancel-icon").on("click", function() {
     .appendTo($("#storage"));
 });
 
-//the save-recipe-button element lives on the recipe deisplay modal. CLicking it will assign
+//the save-recipe-button element lives on the recipe display modal. CLicking it will assign
 //the current recipe to the selected tab on the card. The modal will also close.
 $("#save-recipe-button").on("click", function() {
-  var source = parseInt($(this).attr("data-source"));
-  var newRecipe;
-  switch (source) {
-    case 0:
-      newRecipe = searchResults[parseInt($(this).attr("data-index"))];
-      break;
-    case 1:
-      newRecipe = storedRecipeCache[parseInt($(this).attr("data-index"))];
-      break;
-    default:
-      console.log("defualt at logic.js:194");
+  var newtab = $("#card-tab-label").text();
+  //if the recipe exists on the server
+  if (parseInt($(this).attr("data-source"))) {
+    //if data-source === 1
+    var key = $(this).attr("data-key");
+    var oldtab = $("#tab-label").text();
+    userRecipeBoxRef
+      .child(oldtab)
+      .child(key)
+      .once("value", function(snapshot) {
+        var recipe = snapshot.val();
+        saveRecipe(recipe, newtab);
+        deleteRecipe(oldtab, key);
+      })
+      .catch(function(err) {
+        console.log("ERROR -" + err.code + ": " + err.message);
+      });
+  } else {
+    var newRecipe = searchResults[$(this).attr("data-index")];
+    //save the newRecipe to the local cache and the server using saveRecipe in data.js
+    //Edamam uses dot notation in their keys. when attempting to push a recipe to the server
+    //a validation error is thrown. I have handled the specific instance of this problem
+    //but a more general solution is required.
+    var recipe = scrubKeys(newRecipe);
+    saveRecipe(recipe, newtab);
   }
 
-  var label = recipeTabs[parseInt($("#card-tab-select").attr("value"))];
-  //save the newRecipe to the local cache and the server using saveRecipe in data.js
-  saveRecipe(newRecipe, label);
   $("#content").empty();
   $("#recipe-display-modal")
     .detach()
     .appendTo($("#storage"));
-  var index = recipeTabs.indexOf(newRecipe.tab);
-  $("#tab-label").text(recipeTabs[index]);
+  var index = recipeTabs.indexOf(newtab);
+  $("#tab-label").text(newtab);
   $("#tab-select").attr("value", index + "");
-  updateRecipeBox();
 });

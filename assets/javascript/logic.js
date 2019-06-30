@@ -3,11 +3,6 @@ var box = $("#box"); //add items with .append();
 var storage = $("#storage"); //store hidden items here - modals and dialouges
 var alert = $("#alert");
 
-//global arrays
-//store the names of the user tabs in an array. This array is mirrored on the server
-//TODO - include the tab names in the user profile section of the database (as an array)
-var recipeTabs = [];
-
 //A function that handles css class designation for the active tab in the recipe box
 function toggleActiveTab(tab) {
   $("#tab-all").removeClass("active-tab");
@@ -16,34 +11,25 @@ function toggleActiveTab(tab) {
   tab.addClass("active-tab");
 }
 
-function displayRecipe(index, sourceArray, source, element) {
-  var rec = sourceArray[index];
-  //grab the modal stored in the storage div and make a copy of it.
+function displayRecipe(recipe, element, isSaved) {
+  //grab the modal stored in the storage div
   var modal = $("#recipe-display-modal");
-  $("#save-recipe-button").attr("data-index", index.toString());
-  //populate the recipe-specific data to the modal
-  $("#recipe-modal-image").attr("src", rec.image);
-  //populate the user tabs from the recipe-tabs array
-  var dropdownLabel = $("#card-tab-label");
-  dropdownLabel.detach();
-  $("#card-tab-select").empty();
-  for (var i = 0; i < recipeTabs.length; i++) {
-    var option = $("<div>")
-      .addClass("card-tab-option")
-      .attr("value", i.toString())
-      .text(recipeTabs[i]);
-    $("#card-tab-select").append(option);
+  $("#save-recipe-button").attr("data-index", element.attr("data-index"));
+  if (isSaved) {
+    $("#save-recipe-button").attr("data-key", element.attr("data-key"));
   }
-  dropdownLabel.prependTo($("#card-tab-select"));
+  //populate the recipe-specific data to the modal
+  $("#recipe-modal-image").attr("src", recipe.image);
+
   //label the dropdown with help text
   $("#card-tab-label").text("save recipe to...");
   //update the recipe title
-  $("#recipe-modal-title").text(rec.label);
+  $("#recipe-modal-title").text(recipe.label);
   //update the recipe time
 
-  $("#recipe-modal-time").text(formatTime(rec.totalTime));
+  $("#recipe-modal-time").text(formatTime(recipe.totalTime));
   //update the recipe ingredients
-  var ingredients = rec.ingredientLines;
+  var ingredients = recipe.ingredientLines;
   var list = $("#recipe-modal-ingredients");
   list.empty();
   if (ingredients.length === 1) {
@@ -54,9 +40,10 @@ function displayRecipe(index, sourceArray, source, element) {
   });
   //update the recipe external link
   var link = $("#recipe-modal-link");
-  link.attr("href", rec.url);
-  var host = rec.url.split("/")[2];
-  link.text(host + " - " + rec.label);
+  link.attr("href", recipe.url);
+  var host = recipe.url.split(".")[1];
+  link.text(host + " - " + recipe.label);
+  var source = element.attr("data-source");
   $("#save-recipe-button").attr("data-source", source + "");
   //index tells me where the div should go in the results pane
   //the goal here is a google-image-like experience
@@ -66,36 +53,29 @@ function displayRecipe(index, sourceArray, source, element) {
   } else {
     modal.detach().prependTo($(".results"));
   }
-
-  //refresh the recipe-box modal tabs
-  updateRecipeBox();
-  //buggy?
 }
 
-function updateRecipeBox() {
+//this function takes in a collection of recipes as a JSON object as well as an array of keys for each of the
+//recipes stored in the object.
+function updateRecipeBox(recipeObject, keys) {
   $("#content").empty();
-  for (var i = 0; i < storedRecipeCache.length; i++) {
-    var r = storedRecipeCache[i];
-    //console.log(storedRecipeCache);
-    var currentTab = $("#tab-label").text();
-    if (currentTab == r.tab) {
-      var insert = $("<div>")
-        .addClass("recipe-card-insert")
-        .attr("data-index", i.toString())
-        .attr("data-source", "1");
-      var imgURL = r.image;
-      var image = $("<img>")
-        .attr("src", imgURL)
-        .addClass("recipe-image-tiny");
-      var title = r.label;
-
-      var timestring = formatTime(r.totalTime);
-      var div = $("<div>")
-        .addClass("recipe-insert-info")
-        .append("<div>" + title + "</div>", "<div>" + timestring + "</div>");
-      insert.append(image, div).appendTo($("#content"));
-    }
-  }
+  keys.forEach(function(key, index) {
+    var label = recipeObject[key].label;
+    var imgURL = recipeObject[key].image;
+    var time = recipeObject[key].totalTime;
+    var insert = $("<div>")
+      .addClass("recipe-card-insert")
+      .attr("data-key", key)
+      .attr("data-source", "1");
+    var image = $("<img>")
+      .attr("src", imgURL)
+      .addClass("recipe-image-tiny");
+    var timestring = formatTime(time);
+    var div = $("<div>")
+      .addClass("recipe-insert-info")
+      .append("<div>" + label + "</div>", "<div>" + timestring + "</div>");
+    insert.append(image, div).appendTo($("#content"));
+  });
 }
 
 //a function that takes in a time string from the recipe object and retuns a formatted time string for display
@@ -125,37 +105,55 @@ function flowPastLogin(self) {
   $("#box-click").trigger("click");
 }
 
-// a lot of this function is copied from the above code (consider refactoring)
-function saveRecipeToCurrentTab(searchResultIndex) {
-  var newRecipe;
-  newRecipe = searchResults[searchResultIndex];
-  var label = recipeTabs[parseInt($("#card-tab-select").attr("value"))];
-  saveRecipe(newRecipe, label);
-  // copied from above
-  $("#content").empty();
-  $("#recipe-display-modal")
-    .detach()
-    .appendTo($("#storage"));
-  var index = recipeTabs.indexOf(newRecipe.tab);
-  $("#tab-label").text(recipeTabs[index]);
-  $("#tab-select").attr("value", index + "");
-  updateRecipeBox();
+function layoutTabs(tabs, index = 0) {
+  var boxTabDiv = $("#tab-select");
+  var boxTabLabel = $("#tab-label");
+  var cardTabDiv = $("#card-tab-select");
+  var cardTabLabel = $("#card-tab-label");
+  boxTabLabel.detach().text(tabs[index]);
+  cardTabLabel.detach().text(tabs[index]);
+  boxTabDiv.empty();
+  cardTabDiv.empty();
+  tabs.forEach(function(tab, dex) {
+    var boxtab = $("<div>")
+      .text(tab)
+      .addClass("tab-option")
+      .attr("value", dex + "");
+    boxTabDiv.append(boxtab);
+    var cardtab = $("<div>")
+      .text(tab)
+      .addClass("card-tab-option")
+      .attr("value", dex + "");
+    cardTabDiv.append(cardtab);
+  });
+  boxTabLabel.prependTo(boxTabDiv);
+  cardTabLabel.prependTo(cardTabDiv);
 }
 
-function allowDrop(ev) {
-  ev.preventDefault();
+function loadRecipes(tabname) {
+  userRecipeBoxRef.child(tabname).once("value", function(snapshot) {
+    var recipeObject = snapshot.val();
+    if (recipeObject === null) {
+      $("#content").text("You don't have any recipes saved here. Try searching and adding some");
+      console.log("no recipes to display");
+      return;
+    }
+    var keys = Object.keys(recipeObject);
+    updateRecipeBox(recipeObject, keys);
+  });
 }
 
-// see also buildCard in search.js
-function drag(ev) { // set what gets passed to target
-//  ev.dataTransfer.setData("text", ev.target.id); // original example code
-  ev.dataTransfer.setData("text", ev.target.getAttribute("data-index"));  // data-index is the index of this card in the search results 
+//a function that looks for a specific, known key format issue in the totalNutrients object of a recipe
+//viz, SUGAR.added
+function scrubKeys(object) {
+  var nutrientKeys = Object.keys(object.totalNutrients);
+  if (nutrientKeys.includes("SUGAR.added")) {
+    try {
+      object.totalNutrients["SUGAR_added"] = object.totalNutrients["SUGAR.added"];
+      delete object.totalNutrients["SUGAR.added"];
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+  return object;
 }
-
-function drop(ev) {  
-  ev.preventDefault();
-  var searchResultIndex = ev.dataTransfer.getData("text");
-  console.log("drop event handler - searchResultIndex: '" + searchResultIndex + "'");
-  saveRecipeToCurrentTab(searchResultIndex);
-}
-
