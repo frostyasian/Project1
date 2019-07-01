@@ -32,7 +32,6 @@
   margin-right: -10px;
 }
 
-
 footer {
   position: fixed;
   left: 0;
@@ -41,6 +40,7 @@ footer {
   background-color: rgb(74, 74, 124);
   color: white;
   text-align: center;
+  height: 113px;
 }
 
 .load-more {
@@ -62,5 +62,4 @@ footer {
 .load-more:hover {
   opacity: 0.9;
   box-shadow: 0 0 4px 1px #edf5e1;
-
 }
