@@ -46,6 +46,25 @@ $(document).on("click", ".card-tab-option", function() {
   $("#card-tab-label").text(recipeTabs[index]);
   $("#card-tab-select").attr("value", index + "");
 });
+//a couple of global variables to bypass the drag event
+var dragObject;
+var dragData;
+//a listener to handle drag events on cards -- as Tom mentioned, this is buggy and it seems like only
+//the image is able to be dragged... not sure why. DEBUG required.
+$(document).on("dragstart", ".card", function() {
+  dragData = parseInt($(this).attr("data-index"));
+  dragObject = searchResults[dragData];
+});
+
+//a listener that will allow an object to be dropped within the contents pane of the recipe box
+$("#content").on("dragover", function(event) {
+  event.preventDefault();
+});
+
+//a listener that will handle the drop event
+$("#content").on("drop", function(event) {
+  saveRecipe(dragObject, $("#tab-label").text());
+});
 
 //a listener to handle clicks on a dynamically created div displayed at the end of the search results.
 //the div acts like a button to load more results.

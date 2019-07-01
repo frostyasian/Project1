@@ -19,7 +19,11 @@ $("#search-icon").on("click", function() {
       for (var i = 0; i < response.hits.length; i++) {
         searchResults.push(response.hits[i].recipe);
       }
-      console.log("your search returned " + searchResults.length + " results");
+      if (searchResults.length === 0) {
+        console.log("your search returned " + searchResults.length + " results");
+        getGiph("your search returned 0 results from edamam.");
+      }
+
       displayResults(true);
       //increment the database ref for the user if a search is successful - i.e. only count successful searches
       if (currentUser !== undefined) {
@@ -97,8 +101,7 @@ function buildCard(title, imgUrl, time, index) {
     .addClass("card")
     .attr("data-index", index + "")
     .attr("data-source", "0")
-    .attr("dragable", "true")
-    .attr("ondragstart", "drag(event)");
+    .attr("dragable", "true");
   var cardtitle = $("<div>")
     .addClass("card-title")
     .text(title);
@@ -114,4 +117,35 @@ function buildCard(title, imgUrl, time, index) {
   imgDiv.append(img);
   card.append(cardtitle, imgDiv, preptime);
   return card;
+}
+
+function getGiph(error_message) {
+  var giphQueryString = "http://api.giphy.com/v1/stickers/random?tag=cats&api_key=";
+  $.ajax({
+    url: giphQueryString + giphKey,
+    method: "GET"
+  })
+    .then(function(response) {
+      displayError(response.data.embed_url, error_message);
+    })
+    .catch(function(err) {
+      //handle api call errors here
+
+      console.log("ERROR -" + err.code + ": " + err.message);
+    });
+}
+
+function displayError(giphURL, error_message) {
+  var target = $("#results");
+  var div = $("<div>").addClass("error-pane");
+  var errorTitle = $("<h1>Something went wrong. It's probably your fault.</h1>");
+  var img = $("<img>")
+    .attr("src", giphURL)
+    .addClass("error-giph");
+  var errorMessage = $("<div>")
+    .addClass("error-message")
+    .text(error_message);
+  var close = $("<button>")
+    .text("Gotcha.")
+    .attr("id", "error-button");
 }

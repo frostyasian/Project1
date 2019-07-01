@@ -38,6 +38,7 @@ function saveRecipe(recipeObject, tab) {
     }
     return;
   }
+  recipeObject = scrubKeys(recipeObject);
   //add the recipe to the tab directory on the server.
   userRecipeBoxRef
     .child(tab)
