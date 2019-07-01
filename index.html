@@ -13,10 +13,13 @@
     <!-- JQuery CDN-->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
     <!-- Edamam Arrtibution CDN -->
-     <script src="https://developer.edamam.com/attribution/badge.js"></script>
+
+    <script src="https://developer.edamam.com/attribution/badge.js"></script>
 
     <!-- Font Awesome -->
     <script src="https://kit.fontawesome.com/1a3c5e6c96.js"></script>
+    <!-- Twitter Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Noto+Sans+JP&display=swap" rel="stylesheet" />
     <!-- local stylesheets -->
@@ -28,7 +31,7 @@
     <title>Recipe Box</title>
   </head>
   <body>
-    <div class="container">
+    <div id="container">
       <div class="navbar">
         <div class="brand">
           Recipe Box
@@ -54,7 +57,15 @@
         <div id="box" data-showing="0"></div>
       </div>
     </div>
-    <footer><div id="edamam-badge" data-color="white"></div>
+    <footer>
+      <div id="edamam-badge" data-color="white"></div>
+      <ul>
+          <li>Welcome to the land of recipes</li>
+          <li>We have all of your dietary and culinary needs</li>
+          <li>2019</li>
+      </ul>
+    </footer>
+      
     <div id="storage">
       
       <!-- recipe display modal -->
@@ -123,7 +134,7 @@
         </div>
       </div>
       <!-- Recipe Box Modal -->
-      <div id="recipe-box" ondrop="drop(event)" ondragover="allowDrop(event)">
+      <div id="recipe-box">
         <div class="header">
           <div class="tab" id="tab-select" data-state="0" value="0">
             <span id="tab-label">tab 0</span>
@@ -144,20 +155,12 @@
 
     <!-- Local Scripts -->
     <script src="assets/javascript/firebase-config.js"></script>
+    <script src="assets/javascript/search.js"></script>
     <script src="assets/javascript/auth.js"></script>
     <script src="assets/javascript/data.js"></script>
-    <script src="assets/javascript/search.js"></script>
     <script src="assets/javascript/logic.js"></script>
     <script src="assets/javascript/events.js"></script>
   </body>
-                        
-    <li>Welcome to the land of recipes</li>
-    <li>We have all of your dietary and culinary needs</li>
-    <li>2019</li>
-     <p></p>
-             
-           
- 
 
   
 </html>
