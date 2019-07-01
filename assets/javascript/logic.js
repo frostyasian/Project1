@@ -163,12 +163,9 @@ function scrubKeys(object) {
   return object;
 }
 
-function saveRecipeToCurrentTab(searchResultIndex) {
-  var newRecipe;
-  newRecipe = searchResults[searchResultIndex];
+function saveRecipeToCurrentTab(dragObject) {
   var label = recipeTabs[parseInt($("#card-tab-select").attr("value"))];
-  saveRecipe(newRecipe, label);
-  // copied from above
+  saveRecipe(dragObject, label);
   $("#content").empty();
   $("#recipe-display-modal")
     .detach()
@@ -194,4 +191,5 @@ function drop(ev) {
   console.log("drop event handler - searchResultIndex: '" + searchResultIndex + "'");
   saveRecipeToCurrentTab(searchResultIndex);
 }
+
 
