@@ -21,7 +21,8 @@ $("#search-icon").on("click", function() {
       }
       if (searchResults.length === 0) {
         console.log("your search returned " + searchResults.length + " results");
-        getGiph("your search returned 0 results from edamam.");
+        displayError("invalid search", "This one's on you. Your search returned 0 results.");
+        return;
       }
 
       displayResults(true);
@@ -35,6 +36,7 @@ $("#search-icon").on("click", function() {
           })
           .catch(function(err) {
             console.log("ERROR -" + err.code + ": " + err.message);
+            displayError(err.code, err.message);
           });
       }
     })
@@ -42,6 +44,7 @@ $("#search-icon").on("click", function() {
       //handle api call errors here
 
       console.log("ERROR -" + err.code + ": " + err.message);
+      displayError(err.code, err.message);
     });
 });
 
@@ -119,14 +122,14 @@ function buildCard(title, imgUrl, time, index) {
   return card;
 }
 
-function getGiph(error_message) {
-  var giphQueryString = "http://api.giphy.com/v1/stickers/random?tag=cats&api_key=";
+function getGiph() {
+  var giphQueryString = "http://api.giphy.com/v1/stickers/random?tag=cat&api_key=";
   $.ajax({
     url: giphQueryString + giphKey,
     method: "GET"
   })
     .then(function(response) {
-      displayError(response.data.embed_url, error_message);
+      $("#error-image").attr("src", response.data.image_original_url);
     })
     .catch(function(err) {
       //handle api call errors here
@@ -134,18 +137,62 @@ function getGiph(error_message) {
       console.log("ERROR -" + err.code + ": " + err.message);
     });
 }
+//global variable for the looping giph interval
+var giphInterval;
 
-function displayError(giphURL, error_message) {
-  var target = $("#results");
-  var div = $("<div>").addClass("error-pane");
-  var errorTitle = $("<h1>Something went wrong. It's probably your fault.</h1>");
+function displayError(error_title, error_message) {
+  var target = $(".results");
+  var parent = $("<div>")
+    .addClass("container-fluid")
+    .addClass("error-parent");
+  //the error header inside a jumbotron
+
+  var title = $("<h1>").text("Well, that's not great.");
+  var subtitle = $("<p>")
+    .addClass("lead")
+    .text("We got an error. You get a cat gif.");
+  parent.append(title, subtitle);
+
+  //the error card
+  var card = $("<div>")
+    .addClass("card")
+    .addClass("mx-auto")
+    .css("width", "300px");
+  //the img has no source until we call the getGiph function...
   var img = $("<img>")
-    .attr("src", giphURL)
-    .addClass("error-giph");
-  var errorMessage = $("<div>")
-    .addClass("error-message")
+    .attr("id", "error-image")
+    .addClass("card-img-top")
+    .attr("alt", "a gat gif to make you smile");
+  var cardbody = $("<div>").addClass("card-body");
+
+  var errorTitle = $("<h5>")
+    .addClass("card-title")
+    .text(error_title);
+
+  var errorMessage = $("<p>")
+    .addClass("card-text")
     .text(error_message);
   var close = $("<button>")
-    .text("Gotcha.")
-    .attr("id", "error-button");
+    .text("Okay. Fine.")
+    .attr("id", "error-button")
+    .attr("type", "button")
+    .addClass("btn")
+    .addClass("btn-secondary");
+  cardbody.append(errorTitle, errorMessage, close);
+  card.append(img, cardbody);
+  parent.append(card);
+  $("#recipe-display-modal")
+    .detach()
+    .appendTo($("#storage"));
+  target.empty();
+  target.append(parent);
+  getGiph();
+  giphInterval = setInterval(function() {
+    getGiph();
+  }, 5000);
 }
+
+$(document).on("click", "#error-button", function() {
+  clearInterval(giphInterval);
+  $(".results").empty();
+});

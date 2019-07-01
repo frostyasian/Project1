@@ -9,8 +9,9 @@ var current = 0;
 var range = 25;
 //a function called when a new user is created
 function setProfileData(profileObject) {
-  var timeInMilis = new Date().getTime(); //this is a time string in miliseconds since Jan 1, 1970
+  //var timeInMilis = new Date().getTime(); //this is a time string in miliseconds since Jan 1, 1970
   userProfileRef.set(profileObject).catch(function(err) {
+    displayError(err.code, err.message);
     console.log("ERROR -" + err.code + ": " + err.message);
   });
 }
@@ -20,6 +21,7 @@ function setProfileData(profileObject) {
 //profile directory! Only pass keys that are being updated, otherwise data may be lost.
 function updateData(databaseRef, dataObject = {}) {
   databaseRef.update(dataObject).catch(function(err) {
+    displayError(err.code, err.message);
     console.log("ERROR -" + err.code + ": " + err.message);
   });
 }
@@ -51,6 +53,7 @@ function saveRecipe(recipeObject, tab) {
       loadRecipes(tab);
     })
     .catch(function(err) {
+      displayError(err.code, err.message);
       console.log("ERROR -" + err.code + ": " + err.message);
     });
 }
@@ -62,10 +65,11 @@ function deleteRecipe(tab, key) {
     .child(key)
     .remove()
     .then(function() {
-      console.log("recipe deleted from " + tab);
+      //console.log("recipe deleted from " + tab);
       loadRecipes(tab);
     })
     .catch(function(err) {
+      displayError(err.code, err.message);
       console.log("ERROR -" + err.code + ": " + err.message);
     });
 }
@@ -78,7 +82,7 @@ function fetchRecipeTabs() {
       var obj = snapshot.val();
       //if the user has nothing stored in their database, obj will be null
       if (obj === null) {
-        console.log("no recipes to load");
+        //console.log("no recipes to load");
         return;
       }
 
@@ -87,6 +91,7 @@ function fetchRecipeTabs() {
       loadRecipes(recipeTabs[0]);
     })
     .catch(function(err) {
+      displayError(err.code, err.message);
       console.log("ERROR -" + err.code + ": " + err.message);
     });
 }
