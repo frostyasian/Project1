@@ -206,7 +206,7 @@ $("#box-click").on("click", function() {
     $("#box-gap").css("width", "0px");
   } else {
     box.css("width", "405px").attr("data-showing", "1");
-    $("#box-gap").css("width", "405px");
+    $("#box-gap").css("width", "395px");
   }
 });
 

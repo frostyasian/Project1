@@ -29,9 +29,7 @@
   width: 0;
   height: 100%;
   transition: width, 0.5s;
-  margin-right: -10px;
 }
-
 
 footer {
   position: fixed;
@@ -62,5 +60,4 @@ footer {
 .load-more:hover {
   opacity: 0.9;
   box-shadow: 0 0 4px 1px #edf5e1;
-
 }
