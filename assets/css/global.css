@@ -38,26 +38,27 @@ body {
   justify-content: center;
   border-bottom: 1px solid #05386b;
   position: fixed;
-  background-color: #edf5e1;
+  background-color: #88bdbc;
+  color: #fff;
 }
 
 .search-bar {
   padding: 5px 10px 5px 20px;
   border-radius: 20px;
-  background-color: #379683;
-  color: #edf5e1;
+  background-color: #fff;
+  color: #254e58;
 }
 .search-bar:focus-within {
   outline: none;
-  box-shadow: 0 0 5px 2px #8ee4af;
+  box-shadow: 0 0 5px 2px #254e58;
   justify-self: center;
 }
 input,
 #recipe-search {
   border: none;
   font-size: 18px;
-  background-color: #379683;
-  color: #edf5e1;
+  background-color: #fff;
+  color: #254e58;
   font-family: inherit;
 }
 
