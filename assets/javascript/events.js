@@ -26,10 +26,10 @@ $(document).on("keyup", function(event) {
 
 //A listener to handle clicks on dynamicalyy populated tab dropwdowns for the recipe-box
 $(document).on("click", ".tab-option", function() {
-  console.log("tab click event fired");
+  //console.log("tab click event fired");
   var index = parseInt($(this).attr("value"));
   var tabname = recipeTabs[index];
-  console.log(index + ", " + tabname);
+  // console.log(index + ", " + tabname);
   $("#tab-label").text(tabname);
   $("#tab-select").attr("value", index + "");
   loadRecipes(tabname);
@@ -98,16 +98,16 @@ $(document).on("click", ".card,.recipe-card-insert", function() {
   //data-source points to the array where the recipe information is stored
   var source = parseInt($(this).attr("data-source"));
   var element = $(this);
-  console.log(source);
+  // console.log(source);
   switch (source) {
     case 0:
       displayRecipe(searchResults[parseInt($(this).attr("data-index"))], element, false);
       break;
     case 1:
       var key = element.attr("data-key");
-      console.log(key);
+      // console.log(key);
       var tab = $("#tab-label").text();
-      console.log(tab);
+      // console.log(tab);
       userRecipeBoxRef
         .child(tab)
         .child(key)
@@ -136,7 +136,7 @@ $(document).on("click", "#logout", function() {
         .insertAfter($(".gap1"));
       $(".results").empty();
       //TODO - we can add the animation that Zuoyi built back in, maybe?
-      console.log("user signed out");
+      //console.log("user signed out");
       //Any action to perform if a user signs out
     });
 });
@@ -303,7 +303,7 @@ $("#tab-okay-icon").on("click", function() {
   //first pull down the stored tabs from the database
   userProfileRef
     .once("value", function(snapshot) {
-      console.log("pulling tabs down from firebase");
+      //console.log("pulling tabs down from firebase");
       //assign a reference to the tabs array
       recipeTabs = snapshot.val().tabs;
       if (recipeTabs === undefined) {
