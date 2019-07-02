@@ -4,12 +4,26 @@
   flex-wrap: wrap;
   align-items: flex-start;
   justify-content: flex-start;
+
   background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
     url("../images/bread.jpg");
   background-size: cover;
   /* background-size: 100vh; */
+
+  /* background-image: url("../images/watermark.png");
+  background-size: auto;
+
   background-position: center;
-  background-repeat: no-repeat;
+  background-repeat: no-repeat; */
+}
+
+.results #imgbg {
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: auto;
+  z-index: 0;
+  opacity: 0.1;
 }
 
 .card {
