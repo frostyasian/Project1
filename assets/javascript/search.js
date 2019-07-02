@@ -131,7 +131,7 @@ function buildCard(title, imgUrl, time, index) {
 }
 
 function getGiph() {
-  var giphQueryString = "http://api.giphy.com/v1/stickers/random?tag=cat&api_key=";
+  var giphQueryString = "https://api.giphy.com/v1/stickers/random?tag=cat&api_key=";
   $.ajax({
     url: giphQueryString + giphKey,
     method: "GET"
