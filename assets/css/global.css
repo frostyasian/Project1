@@ -46,7 +46,7 @@ body {
   border-radius: 20px;
   background-color: #fff;
   color: #254e58;
-  width: 275px;
+  width: max-content;
 }
 .search-bar:focus-within {
   outline: none;
