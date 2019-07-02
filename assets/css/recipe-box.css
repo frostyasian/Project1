@@ -132,3 +132,7 @@
 .delete-tab {
   font-size: 24px;
 }
+
+.no-recipe-message {
+  text-align: center;
+}

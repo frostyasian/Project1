@@ -27,7 +27,7 @@ $("#search-icon").on("click", function() {
         searchResults.push(response.hits[i].recipe);
       }
       if (searchResults.length === 0) {
-        console.log("your search returned " + searchResults.length + " results");
+        console.error("your search returned " + searchResults.length + " results");
         displayError("invalid search", "This one's on you. Your search returned 0 results.");
         return;
       }

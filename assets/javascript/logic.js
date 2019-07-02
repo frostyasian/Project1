@@ -102,7 +102,7 @@ function formatTime(time) {
 
 //a function that loads the recipe box for a user / guest and closes the box modal after login
 function flowPastLogin(self) {
-  console.log(self);
+  //console.log(self);
   self.detach().appendTo($("#storage"));
   $("#recipe-box")
     .detach()
@@ -117,7 +117,7 @@ function layoutTabs(tabs, index = 0) {
   var cardTabLabel = $("#card-tab-label");
   var deleteTabDialogue = $("#tab-delete-dialogue");
   if (recipeTabs.length === 0) {
-    console.log("no tabs to display");
+    // console.log("no tabs to display");
   }
   boxTabLabel.detach().text(tabs[index]);
   cardTabLabel.detach().text(tabs[index]);
@@ -154,8 +154,11 @@ function loadRecipes(tabname) {
   userRecipeBoxRef.child(tabname).once("value", function(snapshot) {
     var recipeObject = snapshot.val();
     if (recipeObject === null) {
-      $("#content").text("You don't have any recipes saved here. Try searching and adding some");
-      console.log("no recipes to display");
+      var p = $("<p>")
+        .addClass("no-recipe-message")
+        .text("You don't have any recipes saved here. Try searching and adding some");
+      $("#content").append(p);
+      //console.log("no recipes to display");
       return;
     }
     var keys = Object.keys(recipeObject);
@@ -198,6 +201,6 @@ function drag(ev) {
 function drop(ev) {
   ev.preventDefault();
   var searchResultIndex = ev.dataTransfer.getData("text");
-  console.log("drop event handler - searchResultIndex: '" + searchResultIndex + "'");
+  //console.log("drop event handler - searchResultIndex: '" + searchResultIndex + "'");
   saveRecipeToCurrentTab(searchResultIndex);
 }
