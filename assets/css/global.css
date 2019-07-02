@@ -128,3 +128,8 @@ input,
   background-color: #252525;
   color: #edf5e1;
 }
+
+.icon {
+  width: 25px;
+  height: 25px;
+}

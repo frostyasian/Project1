@@ -12,11 +12,11 @@
     <!-- Firebase Real-Time Database CDN-->
     <script src="https://www.gstatic.com/firebasejs/6.2.2/firebase-database.js"></script>
     <!-- JQuery CDN-->
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" type="text/javascript" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
     <!-- Edamam Arrtibution CDN -->
     <script src="https://developer.edamam.com/attribution/badge.js"></script>
     <!-- Font Awesome -->
-    <script src="https://kit.fontawesome.com/1a3c5e6c96.js"></script>
+    <script src="https://kit.fontawesome.com/a65d4a7d3c.js"></script>
     <!-- Twitter Bootstrap -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <!-- Google Fonts -->
@@ -67,7 +67,7 @@
             <span id="line">
               <div class="search-bar">
               <input id="recipe-search" type="text" placeholder="'eggplant parmesaen'" />
-              <i class="fas fa-search" id="search-icon"></i>
+              <img src="assets/images/search-icon.png" class="icon" id="search-icon" alt="search icon" />
             </div>
             </span>
           </div>
@@ -109,12 +109,12 @@
                 <div id="recipe-display-button-group">
                   <button id="save-recipe-button">save</button>
                   <button id="delete-recipe-button" disabled>delete</button>
-                  <i id="card-tab-cancel-icon" class="far fa-window-close"></i>
+                  <img id="card-tab-cancel-icon" class="icon" src="assets/images/cancel-icon-white.png" />
                 </div>
                 
             </div>
             <h3 id="recipe-modal-title">Some Recipe Title</h3>
-            <h4><i class="fas fa-stopwatch pad-right"></i> <span id="recipe-modal-time">7 hours 30 minutes</span></h3>
+            <h4><span id="recipe-modal-time">7 hours 30 minutes</span></h3>
             <div class="columns">
               <ul id="recipe-modal-ingredients">
                 <li>1 chicken, about 3.5 to 4 pounds</li>
@@ -167,11 +167,11 @@
             
           </div>
           <div class="tab" id="add-custom-tab">
-            <i id="tab-plus-icon" class="fas fa-plus"></i>
+            <div id="tab-plus-icon">+</div>
             <div id="custom-tab-dialogue" data-state="0">
               <input id="custom-tab-input" type="text" />
-              <i id="tab-okay-icon" class="far fa-check-square"></i>
-              <i id="tab-cancel-icon" class="far fa-window-close"></i>
+              <img id="tab-okay-icon" class="icon" src="assets/images/ok-icon.png" alt="okay icon">
+              <img id="tab-cancel-icon" class="icon" src="assets/images/cancel-icon.png" alt="cancel icon" >
               <div id="tab-delete-dialogue">
               
               </div>
@@ -184,11 +184,11 @@
     </div>
 
 
-    <div class="-searchresults-only" data-resultsUrl="https://www.edamam.com/"></div>
+    <!-- <div class="-searchresults-only" data-resultsUrl="https://www.edamam.com/"></div> -->
 <!--     
     <div class="gcse-searchbox">
     <div class="gcse-searchresults"> -->
-    <div class="gcse-search"></div>
+    <!-- <div class="gcse-search"></div> -->
     
 
     
@@ -201,7 +201,7 @@
     <script src="assets/javascript/logic.js"></script>
     <script src="assets/javascript/events.js"></script>
     <!-- google custom search -->
-    <script async src="https://cse.google.com/cse.js?cx=004846254824730991942:w6qnzhs0gv0"></script>
+    <!-- <script async src="https://cse.google.com/cse.js?cx=004846254824730991942:w6qnzhs0gv0"></script> -->
   </body>
 
   
