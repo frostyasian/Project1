@@ -40,6 +40,12 @@ function saveRecipe(recipeObject, tab) {
     }
     return;
   }
+  if (tab === undefined || tab === null || recipeTabs.length === 0) {
+    recipeTabs = ["default tab"];
+    $("#tab-label").text("default tab");
+    tab = "default tab";
+    layoutTabs(recipeTabs, 0);
+  }
   recipeObject = scrubKeys(recipeObject);
   //check for uniqueness
   var duplicate = false;
