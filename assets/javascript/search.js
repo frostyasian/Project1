@@ -3,9 +3,16 @@ var searchTerm = "";
 var range = 25;
 var current = 0;
 var max = 25;
+var firstSearch = true;
 //the search method performs an ajax get request to the API and returns the results to
 //the searchResults array.
 $("#search-icon").on("click", function() {
+  if (firstSearch) {
+    $(".search-bar")
+      .detach()
+      .insertAfter($(".gap1"));
+    firstSearch = false;
+  }
   searchTerm = $("#recipe-search")
     .val()
     .trim();
