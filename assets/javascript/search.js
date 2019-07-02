@@ -47,6 +47,7 @@ $("#search-icon").on("click", function() {
           });
       }
     })
+
     .catch(function(err) {
       //handle api call errors here
 
