@@ -72,6 +72,12 @@ function saveRecipe(recipeObject, tab) {
         .then(function() {
           //then we update the recipe box loaclly.
           loadRecipes(tab);
+          //and count the recipe
+          userProfileRef.once("value", function(snapshot) {
+            var storedRecipes = parseInt(snapshot.val().storedRecipes);
+            storedRecipes++;
+            updateData(userProfileRef, { storedRecipes });
+          });
         })
         .catch(function(err) {
           displayError(err.code, err.message);
@@ -92,6 +98,12 @@ function deleteRecipe(tab, key) {
     .then(function() {
       //console.log("recipe deleted from " + tab);
       loadRecipes(tab);
+      //then log the deletion statistic
+      userProfileRef.once("value", function(snapshot) {
+        var deletedRecipes = parseInt(snapshot.val().deletedRecipes);
+        deletedRecipes++;
+        updateData(userProfileRef, { deletedRecipes });
+      });
     })
     .catch(function(err) {
       displayError(err.code, err.message);
