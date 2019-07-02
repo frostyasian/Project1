@@ -154,9 +154,11 @@ function loadRecipes(tabname) {
   userRecipeBoxRef.child(tabname).once("value", function(snapshot) {
     var recipeObject = snapshot.val();
     if (recipeObject === null) {
-      var p = $("<p>")
+      var p = $("<div>")
         .addClass("no-recipe-message")
-        .text("You don't have any recipes saved here. Try searching and adding some");
+        .text(
+          "You don't have any recipes saved here. Try searching and adding some"
+        );
       $("#content")
         .empty()
         .append(p);
@@ -174,7 +176,8 @@ function scrubKeys(object) {
   var nutrientKeys = Object.keys(object.totalNutrients);
   if (nutrientKeys.includes("SUGAR.added")) {
     try {
-      object.totalNutrients["SUGAR_added"] = object.totalNutrients["SUGAR.added"];
+      object.totalNutrients["SUGAR_added"] =
+        object.totalNutrients["SUGAR.added"];
       delete object.totalNutrients["SUGAR.added"];
     } catch (error) {
       console.log(error.message);
