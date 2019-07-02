@@ -94,7 +94,6 @@ footer p {
 
 /* Sliding intro */
 .headerContainer {
-  max-width: 960px;
   margin: auto;
   padding: 0 30px;
   flex-wrap: wrap;
@@ -119,7 +118,7 @@ footer p {
     top: -50px;
   }
   100% {
-    top: 100px;
+    top: 50%;
   }
 }
 #headerContent {
@@ -131,7 +130,6 @@ footer p {
   animation-fill-mode: forwards;
   margin: 0;
   padding: 0;
-  bottom: 170px;
   padding-left: 20px;
 }
 @keyframes content {
@@ -139,7 +137,7 @@ footer p {
     left: -1000px;
   }
   100% {
-    left: 0px;
+    left: 5px;
   }
 }
 #line {
