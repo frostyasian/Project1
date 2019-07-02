@@ -42,7 +42,8 @@
   border-left: 1px solid #05386b;
   background-color: #edf5e1;
   width: 100%;
-  flex: 1 0 auto;
+  height: 100%;
+  overflow-y: scroll;
 }
 
 .tab-option:hover {
