@@ -98,16 +98,16 @@ $(document).on("click", ".card,.recipe-card-insert", function() {
   //data-source points to the array where the recipe information is stored
   var source = parseInt($(this).attr("data-source"));
   var element = $(this);
-  //console.log(source);
+  console.log(source);
   switch (source) {
     case 0:
       displayRecipe(searchResults[parseInt($(this).attr("data-index"))], element, false);
       break;
     case 1:
       var key = element.attr("data-key");
-      //console.log(key);
+      console.log(key);
       var tab = $("#tab-label").text();
-      //console.log(tab);
+      console.log(tab);
       userRecipeBoxRef
         .child(tab)
         .child(key)
