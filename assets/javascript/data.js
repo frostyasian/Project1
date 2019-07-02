@@ -41,21 +41,38 @@ function saveRecipe(recipeObject, tab) {
     return;
   }
   recipeObject = scrubKeys(recipeObject);
+  //check for uniqueness
+  var duplicate = false;
+  var newURL = recipeObject.url;
+  userRecipeBoxRef.child(tab).once("value", function(snapshot) {
+    var allSavedRecipes = snapshot.val();
+    var recipeKeys = Object.keys(allSavedRecipes);
+    for (var i = 0; i < recipeKeys.length; i++) {
+      var savedURL = allSavedRecipes[recipeKeys[i]].url;
+      console.log(savedURL === newURL);
+      if (savedURL === newURL) {
+        duplicate = true;
+      }
+    }
+    if (!duplicate) {
+      userRecipeBoxRef
+        .child(tab)
+        .push(recipeObject)
+        .catch(function(err) {
+          console.log("ERROR -" + err.code + ": " + err.message);
+        })
+        .then(function() {
+          //then we update the recipe box loaclly.
+          loadRecipes(tab);
+        })
+        .catch(function(err) {
+          displayError(err.code, err.message);
+          console.log("ERROR -" + err.code + ": " + err.message);
+        });
+    }
+  });
+
   //add the recipe to the tab directory on the server.
-  userRecipeBoxRef
-    .child(tab)
-    .push(recipeObject)
-    .catch(function(err) {
-      console.log("ERROR -" + err.code + ": " + err.message);
-    })
-    .then(function() {
-      //then we update the recipe box loaclly.
-      loadRecipes(tab);
-    })
-    .catch(function(err) {
-      displayError(err.code, err.message);
-      console.log("ERROR -" + err.code + ": " + err.message);
-    });
 }
 
 //a function to delete a recipe - TODO - update this function!!!!!
