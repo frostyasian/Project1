@@ -115,10 +115,15 @@ function layoutTabs(tabs, index = 0) {
   var boxTabLabel = $("#tab-label");
   var cardTabDiv = $("#card-tab-select");
   var cardTabLabel = $("#card-tab-label");
+  var deleteTabDialogue = $("#tab-delete-dialogue");
+  if (recipeTabs.length === 0) {
+    console.log("no tabs to display");
+  }
   boxTabLabel.detach().text(tabs[index]);
   cardTabLabel.detach().text(tabs[index]);
   boxTabDiv.empty();
   cardTabDiv.empty();
+  deleteTabDialogue.empty();
   tabs.forEach(function(tab, dex) {
     var boxtab = $("<div>")
       .text(tab)
@@ -130,6 +135,16 @@ function layoutTabs(tabs, index = 0) {
       .addClass("card-tab-option")
       .attr("value", dex + "");
     cardTabDiv.append(cardtab);
+    //build the tab delete dialouges
+    var delbtn = $("<span>")
+      .addClass("delete-tab")
+      .text("x")
+      .attr("data-tab", tab);
+    var delTabDiv = $("<div>")
+      .text(tab)
+      .append(delbtn)
+      .addClass("del-tab-row");
+    deleteTabDialogue.append(delTabDiv);
   });
   boxTabLabel.prependTo(boxTabDiv);
   cardTabLabel.prependTo(cardTabDiv);

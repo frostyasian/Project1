@@ -40,18 +40,26 @@ function saveRecipe(recipeObject, tab) {
     }
     return;
   }
+  if (tab === undefined || tab === null || recipeTabs.length === 0) {
+    recipeTabs = ["default tab"];
+    $("#tab-label").text("default tab");
+    tab = "default tab";
+    layoutTabs(recipeTabs, 0);
+  }
   recipeObject = scrubKeys(recipeObject);
   //check for uniqueness
   var duplicate = false;
   var newURL = recipeObject.url;
   userRecipeBoxRef.child(tab).once("value", function(snapshot) {
     var allSavedRecipes = snapshot.val();
-    var recipeKeys = Object.keys(allSavedRecipes);
-    for (var i = 0; i < recipeKeys.length; i++) {
-      var savedURL = allSavedRecipes[recipeKeys[i]].url;
-      console.log(savedURL === newURL);
-      if (savedURL === newURL) {
-        duplicate = true;
+    if (allSavedRecipes !== null) {
+      var recipeKeys = Object.keys(allSavedRecipes);
+      for (var i = 0; i < recipeKeys.length; i++) {
+        var savedURL = allSavedRecipes[recipeKeys[i]].url;
+
+        if (savedURL === newURL) {
+          duplicate = true;
+        }
       }
     }
     if (!duplicate) {
@@ -102,10 +110,15 @@ function fetchRecipeTabs() {
         //console.log("no recipes to load");
         return;
       }
-
-      recipeTabs = obj.tabs;
-      layoutTabs(recipeTabs, 0);
-      loadRecipes(recipeTabs[0]);
+      //if the user deleted all of their tabs, obj.tabs is undefined
+      if (obj.tabs === undefined) {
+        recipeTabs = [];
+        layoutTabs(recipeTabs, 0);
+      } else {
+        recipeTabs = obj.tabs;
+        layoutTabs(recipeTabs, 0);
+        loadRecipes(recipeTabs[0]);
+      }
     })
     .catch(function(err) {
       displayError(err.code, err.message);
