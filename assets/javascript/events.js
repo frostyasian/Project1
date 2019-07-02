@@ -141,6 +141,75 @@ $(document).on("click", "#logout", function() {
     });
 });
 
+//a click listener to delete a tab
+
+$(document).on("click", ".delete-tab", function() {
+  // <div id="auth-alert-up" class="hidden alert ">Some Alert Message</div>
+  var okay = $("<button>")
+    .attr("id", "delete-tab-okay")
+    .text("okay")
+    .attr("data-tab", $(this).attr("data-tab"));
+  var cancel = $("<button>")
+    .attr("id", "delete-tab-cancel")
+    .text("cancel");
+  var buttonbox = $("<div>")
+    .attr("id", "delete-tab-buttons")
+    .append(cancel, okay);
+  var alert = $("<div>")
+    .addClass("alert")
+    .attr("id", "tab-delete-alert")
+    .text("WARNING. Deleting this tab will remove all saved recipes in this location. You cannot undo this.")
+    .append(buttonbox);
+  $($(this).parent()).after(alert);
+});
+
+//a listener for the tab-delete-okay button
+$(document).on("click", "#delete-tab-okay", function() {
+  //delete the tab from the database
+  var tab = $(this).attr("data-tab");
+  //get the tab out of the recipeTabs array
+  var dex = recipeTabs.indexOf(tab);
+  var temp = [];
+  for (var i = 0; i < dex; i++) {
+    temp.push(recipeTabs.shift());
+  }
+  recipeTabs.shift();
+  while (temp.length > 0) {
+    recipeTabs.push(temp.pop());
+  }
+  recipeTabs.sort();
+  if (recipeTabs.length === 0) {
+    $("#tab-select").text("");
+  }
+  userRecipeBoxRef
+    .child(tab)
+    .remove()
+    .then(function() {
+      userProfileRef
+        .update({
+          tabs: recipeTabs
+        })
+        .then(function() {
+          layoutTabs(recipeTabs, 0);
+          $("#tab-delete-alert").remove();
+        })
+        .catch(function(err) {
+          displayError(err.code, err.message);
+          console.log("ERROR -" + err.code + ": " + err.message);
+        });
+    })
+    .catch(function(err) {
+      displayError(err.code, err.message);
+      console.log("ERROR -" + err.code + ": " + err.message);
+    });
+  //remove the warning from the modal
+});
+
+//a listener for the tab-delete-cancel button
+$(document).on("click", "#delete-tab-cancel", function() {
+  //remove the warning modal
+  $("#tab-delete-alert").remove();
+});
 //a listener to log a user in anonymously. This filter is needed
 //because the div exists in two different modals with unique ids
 $(document).on("click", "#guest-auth-in,#guest-auth-up", function() {
@@ -237,7 +306,9 @@ $("#tab-okay-icon").on("click", function() {
       console.log("pulling tabs down from firebase");
       //assign a reference to the tabs array
       recipeTabs = snapshot.val().tabs;
-
+      if (recipeTabs === undefined) {
+        recipeTabs = [];
+      }
       //add the new tab to the array
       recipeTabs.push(tabname);
       //then sort the tabs alphabetically
@@ -279,6 +350,9 @@ $("#tab-select").on("click", function() {
     $(this)
       .children()
       .toArray().length;
+  if (height === 0) {
+    height = 36;
+  }
   if (isShowing) {
     $(this)
       .css("height", "36px")
