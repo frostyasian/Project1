@@ -35,13 +35,15 @@
   overflow: hidden;
   cursor: pointer;
   transition: height, 0.5s;
-  background-color: #ffd4d1;
+  background-image: url("../images/brickks.jpg");
+  background-size: cover;
 }
 
 #content {
   border-left: 1px solid #05386b;
 
-  background-color: #ffd4d1;
+  background-image: url("../images/colorwood.jpg");
+  background-size: cover;
   width: 100%;
   height: 100%;
   overflow-y: scroll;
@@ -54,13 +56,16 @@
 #add-custom-tab {
   cursor: pointer;
   position: relative;
+  background-image: url("../images/brickks.jpg");
+  background-size: cover;
 }
 
 #custom-tab-dialogue {
   padding: 5px;
   position: absolute;
   width: 405px;
-  background-color: #edf5e1;
+  background-image: url("../images/brickks.jpg");
+  background-size: cover;
   display: none;
   flex-wrap: wrap;
   align-items: center;
@@ -105,6 +110,7 @@
   border-bottom: 1px solid #05386b;
   border-top: 1px solid #05386b;
   cursor: pointer;
+  background-color: #fff;
 }
 
 .recipe-insert-info {
@@ -113,6 +119,7 @@
   align-items: center;
   justify-content: center;
   margin-left: 10px;
+  font-weight: bolder;
 }
 
 .recipe-image-tiny {
@@ -135,4 +142,13 @@
 
 .no-recipe-message {
   text-align: center;
+  padding: 20px;
+  font-weight: bolder;
+  color: #000000;
+  height: 100%;
+  background-color: black;
+  background-image: url("../images/cat.jpg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
 }

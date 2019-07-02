@@ -5,7 +5,8 @@
   align-items: flex-start;
   justify-content: flex-start;
 
-  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("../images/bread.jpg");
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url("../images/bread.jpg");
   background-size: cover;
   /* background-size: 100vh; */
 
