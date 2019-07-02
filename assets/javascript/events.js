@@ -1,10 +1,5 @@
 // This file holds listeners for click and key events only
 
-//window level events are events that happen at the top of the DOM, such as page refresh, forward and back navigation, etc.
-//TODO - add $(window).unload(function(event){
-// //update user profile to be logged out
-// //avoid page refresh
-// });
 //document level events are events triggered on the document
 //the event listeners that follow are organized by document level execution
 //events triggerd and handled by the document come first. Events triggered by the document
@@ -45,6 +40,28 @@ $(document).on("click", ".card-tab-option", function() {
   var index = parseInt($(this).attr("value"));
   $("#card-tab-label").text(recipeTabs[index]);
   $("#card-tab-select").attr("value", index + "");
+});
+
+//a couple of global variables to bypass the drag event
+var dragObject;
+var dragData;
+//a listener to handle drag events on cards -- as Tom mentioned, this is buggy and it seems like only
+//the image is able to be dragged... not sure why. DEBUG required.
+$(document).on("dragstart", ".card", function() {
+  dragData = parseInt($(this).attr("data-index"));
+  dragObject = searchResults[dragData];
+  dragObject = scrubKeys(dragObject);
+});
+
+//a listener that will allow an object to be dropped within the contents pane of the recipe box
+$("#content").on("dragover", function(event) {
+  event.preventDefault();
+});
+
+//a listener that will handle the drop event
+$("#content").on("drop", function(event) {
+  //  saveRecipe(dragObject, $("#tab-label").text());
+  saveRecipeToCurrentTab(dragObject);
 });
 
 //a listener to handle clicks on a dynamically created div displayed at the end of the search results.
@@ -88,9 +105,9 @@ $(document).on("click", ".card,.recipe-card-insert", function() {
       break;
     case 1:
       var key = element.attr("data-key");
-      console.log(key);
+      //console.log(key);
       var tab = $("#tab-label").text();
-      console.log(tab);
+      //console.log(tab);
       userRecipeBoxRef
         .child(tab)
         .child(key)
@@ -101,7 +118,7 @@ $(document).on("click", ".card,.recipe-card-insert", function() {
 
       break;
     default:
-      console.log("defualt at logic.js:194");
+      return;
   }
 });
 
@@ -114,6 +131,9 @@ $(document).on("click", "#logout", function() {
     .then(function() {
       updateData(userProfileRef, { isActive: false });
       //clear the results div - this is a fix to the click events being stripped off of recipes that are still displayed after logout
+      $(".search-bar")
+        .detach()
+        .insertAfter($(".gap1"));
       $(".results").empty();
       //TODO - we can add the animation that Zuoyi built back in, maybe?
       console.log("user signed out");
@@ -187,7 +207,7 @@ $("#box-click").on("click", function() {
     $("#box-gap").css("width", "0px");
   } else {
     box.css("width", "405px").attr("data-showing", "1");
-    $("#box-gap").css("width", "405px");
+    $("#box-gap").css("width", "395px");
   }
 });
 

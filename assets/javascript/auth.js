@@ -8,6 +8,7 @@ firebase
   .auth()
   .setPersistence(firebase.auth.Auth.Persistence.SESSION)
   .catch(function(err) {
+    displayError(err.code, err.message);
     console.log("ERROR -" + err.code + ": " + err.message);
   });
 
@@ -258,10 +259,12 @@ function linkGuestToAccount(email, password, userName) {
           $("#box-click").text(currentUser.displayName);
         })
         .catch(function(err) {
+          displayError(err.code, err.message);
           console.log("ERROR -" + err.code + ": " + err.message);
         });
     })
     .catch(function(err) {
+      displayError(err.code, err.message);
       console.log("ERROR -" + err.code + ": " + err.message);
     });
 }
