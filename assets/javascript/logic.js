@@ -93,7 +93,7 @@ function formatTime(time) {
     var hours = Math.floor(timeInMinutes / 60);
     var minutes = Math.round(timeInMinutes % 60);
     if (hours === 0) {
-      return minutes + "minutes";
+      return minutes + " minutes";
     }
     return hours + " hours " + minutes + " minutes";
   }
@@ -157,7 +157,9 @@ function loadRecipes(tabname) {
       var p = $("<p>")
         .addClass("no-recipe-message")
         .text("You don't have any recipes saved here. Try searching and adding some");
-      $("#content").append(p);
+      $("#content")
+        .empty()
+        .append(p);
       //console.log("no recipes to display");
       return;
     }
