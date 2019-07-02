@@ -5,8 +5,7 @@
   align-items: flex-start;
   justify-content: flex-start;
 
-  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-    url("../images/bread.jpg");
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("../images/bread.jpg");
   background-size: cover;
   /* background-size: 100vh; */
 
@@ -50,22 +49,20 @@
 }
 
 footer {
-  position: fixed;
-  left: 0;
-  bottom: 0;
   width: 100%;
   background-color: #88bdbc;
   color: white;
-  height: 85px;
   font-size: 10px;
   flex-shrink: 0;
   display: flex;
-  justify-content: center;
+  align-items: center;
+  justify-content: space-between;
   text-align: center;
-  padding: 20px;
+  padding: 10px;
 }
 footer p {
   text-align: center;
+  margin: 2px;
 }
 
 .load-more {
@@ -101,7 +98,7 @@ footer p {
   display: flex;
   justify-content: center;
 }
-#showcase h1 {
+#showcase {
   font-size: 50px;
   line-height: 1.3;
   position: relative;
