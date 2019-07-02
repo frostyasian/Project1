@@ -93,7 +93,7 @@ function formatTime(time) {
     var hours = Math.floor(timeInMinutes / 60);
     var minutes = Math.round(timeInMinutes % 60);
     if (hours === 0) {
-      return minutes + "minutes";
+      return minutes + " minutes";
     }
     return hours + " hours " + minutes + " minutes";
   }
