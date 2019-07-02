@@ -163,17 +163,10 @@ function scrubKeys(object) {
   return object;
 }
 
-
 function saveRecipeToCurrentTab(dragObject) {
-  var label = recipeTabs[parseInt($("#card-tab-select").attr("value"))];
+  var label = $("#tab-label").text();
+
   saveRecipe(dragObject, label);
-  $("#content").empty();
-  $("#recipe-display-modal")
-    .detach()
-    .appendTo($("#storage"));
-  var index = recipeTabs.indexOf(newRecipe.tab);
-  $("#tab-label").text(recipeTabs[index]);
-  $("#tab-select").attr("value", index + "");
 }
 
 function allowDrop(ev) {
@@ -181,17 +174,15 @@ function allowDrop(ev) {
 }
 
 // see also buildCard in search.js
-function drag(ev) { // set what gets passed to target
-//  ev.dataTransfer.setData("text", ev.target.id); // original example code
-  ev.dataTransfer.setData("text", ev.target.getAttribute("data-index"));  // data-index is the index of this card in the search results 
+function drag(ev) {
+  // set what gets passed to target
+  //  ev.dataTransfer.setData("text", ev.target.id); // original example code
+  ev.dataTransfer.setData("text", ev.target.getAttribute("data-index")); // data-index is the index of this card in the search results
 }
 
-function drop(ev) {  
+function drop(ev) {
   ev.preventDefault();
   var searchResultIndex = ev.dataTransfer.getData("text");
   console.log("drop event handler - searchResultIndex: '" + searchResultIndex + "'");
   saveRecipeToCurrentTab(searchResultIndex);
 }
-
-
-

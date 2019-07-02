@@ -40,8 +40,12 @@
 
 #content {
   border-left: 1px solid #05386b;
+
   background-color: #ffd4d1;
-  flex: 1 0 auto;
+  width: 100%;
+  height: 100%;
+  overflow-y: scroll;
+
 }
 
 .tab-option:hover {
