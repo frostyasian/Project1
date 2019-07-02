@@ -154,7 +154,10 @@ function loadRecipes(tabname) {
   userRecipeBoxRef.child(tabname).once("value", function(snapshot) {
     var recipeObject = snapshot.val();
     if (recipeObject === null) {
-      $("#content").text("You don't have any recipes saved here. Try searching and adding some");
+      var p = $("<p>")
+        .addClass("no-recipe-message")
+        .text("You don't have any recipes saved here. Try searching and adding some");
+      $("#content").append(p);
       console.log("no recipes to display");
       return;
     }
