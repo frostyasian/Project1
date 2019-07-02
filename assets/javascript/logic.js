@@ -163,6 +163,7 @@ function scrubKeys(object) {
   return object;
 }
 
+
 function saveRecipeToCurrentTab(dragObject) {
   var label = recipeTabs[parseInt($("#card-tab-select").attr("value"))];
   saveRecipe(dragObject, label);
@@ -191,5 +192,6 @@ function drop(ev) {
   console.log("drop event handler - searchResultIndex: '" + searchResultIndex + "'");
   saveRecipeToCurrentTab(searchResultIndex);
 }
+
 
 
