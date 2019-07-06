@@ -1,15 +1,15 @@
 var firebaseConfig = {
-  apiKey: "AIzaSyCr7ZdjRuOSChN3BIdNNa2l3SEtgQiHl2Y",
-  authDomain: "recipe-box-d4385.firebaseapp.com",
-  databaseURL: "https://recipe-box-d4385.firebaseio.com",
-  projectId: "recipe-box-d4385",
-  storageBucket: "",
-  messagingSenderId: "813897633460",
-  appId: "1:813897633460:web:789fb9b6748cf3e2"
+  apiKey: "AIzaSyDfQdEV3qyvJiCn8DDAau9stCrPERFbVLQ",
+  authDomain: "project1-bab30.firebaseapp.com",
+  databaseURL: "https://project1-bab30.firebaseio.com",
+  projectId: "project1-bab30",
+  storageBucket: "project1-bab30.appspot.com",
+  messagingSenderId: "686045408466",
+  appId: "1:686045408466:web:b65d6661e432870d"
 };
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
-var apiKey = "&app_id=3f5ead16&app_key=c225ae2c7c6a61ce84c5a6514777dbd2";
+var apiKey = "&app_id=7e374ec0&app_key=b02070a6f2b8d004f6d68db8a317ab84";
 
-var giphKey = "PXSc4twP7Myl2bmlCJngE5Nxx91QMdZz";
+var giphKey = "XljahkQmrRVSeTQEE2J8thxiOuNW1tn1";
